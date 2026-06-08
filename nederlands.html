@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8"><title>Nederlands</title>
+    <style>
+        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; margin-top: 10px; }
+        .box:hover { border-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <div class="arcade" style="margin-top: 25px;">
+        <h2>Verbanden & Grammatica Puzzel 🇳🇱</h2>
+        <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0;"></p>
+        <div id="choices"></div>
+        <h3 id="feedback" style="margin-top: 20px;"></h3>
+    </div>
+    <script>
+        const data = [
+            { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "Het voorbijrijdende verkeer"] },
+            { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan."] }
+        ];
+        let cur;
+        function load() {
+            document.getElementById('feedback').innerText = "";
+            cur = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('target').innerText = cur.q;
+            let choices = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
+            let container = document.getElementById('choices'); container.innerHTML = "";
+            choices.forEach(c => {
+                let d = document.createElement('div'); d.className = "box"; d.innerText = c;
+                d.onclick = () => {
+                    let fb = document.getElementById('feedback');
+                    if(c === cur.a) { fb.innerText = "Taalmeester! ✨"; fb.style.color = "#10b981"; }
+                    else { fb.innerText = "Probeer opnieuw! ❌"; fb.style.color = "#ef4444"; }
+                    setTimeout(load, 1500);
+                };
+                container.appendChild(d);
+            });
+        }
+        load();
+    </script>
+</body>
+</html>

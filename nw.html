@@ -1,65 +1,70 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8"><title>Wetenschappen Game</title>
+    <meta charset="UTF-8"><title>Natuurwetenschappen Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #eab308; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; display: inline-block; width: 40%; color: white; font-weight: bold;}
-        .box:hover { border-color: #eab308; }
+        .arcade { background: #141423; border: 3px solid #a78bfa; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(167, 139, 250, 0.3); }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; display: inline-block; width: 45%; color: white; font-weight: bold; }
+        .box:hover { border-color: #a78bfa; }
     </style>
 </head>
-<body>
+<body onload="loadQuestion()">
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
-    <div class="arcade" style="margin-top: 25px;\">
-        <h2>Maatschappelijk Domein Sorter 📜</h2>
-        <p id="target" style="font-size: 1.2rem; margin: 20px 0; color: #eab308; font-weight: bold; min-height: 50px;"></p>
-        <div class="box" onclick="check('Politiek')">👑 Politiek</div>
-        <div class="box" onclick="check('Economisch')">🌾 Economisch</div>
-        <div class="box" onclick="check('Sociaal')">👥 Sociaal</div>
-        <div class="box" onclick="check('Cultureel')">🎨 Cultureel</div>
-        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
+    <div class="arcade" style="margin-top: 25px;">
+        <h2>Wetenschappen Quiz 🧪</h2>
+        <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0; font-weight: bold; color: #a78bfa;"></p>
+        <div id="choices"></div>
+        <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
+
+    <script type="module" src="firebase-config.js"></script>
     <script>
         const data = [
-            { b: "Een oude Romeinse munt (Denari) gebruikt om graan te kopen.", d: "Economisch" },
-            { b: "Een wet uitgevaardigd door keizer Augustus.", d: "Politiek" },
-            { b: "Een wandschildering van de Romeinse god Jupiter.", d: "Cultureel" }
+            { q: "Wat is de formule voor massadichtheid?", a: "ρ = m / V", f: ["ρ = m * V", "ρ = V / m"] },
+            { q: "Is massadichtheid een stofeigenschap?", a: "Ja", f: ["Nee"] },
+            { q: "Wat meet je met een dynamometer?", a: "Kracht (N)", f: ["Massa (kg)", "Volume (L)"] }
         ];
-        
         let cur;
-        let score = 0;
+        let localScore = 0;
 
         function loadQuestion() {
             document.getElementById('feedback').innerText = "";
             cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('target').innerText = cur.b;
+            document.getElementById('target').innerText = cur.q;
+            
+            let choicesContainer = document.getElementById('choices');
+            choicesContainer.innerHTML = "";
+            
+            let allChoices = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
+            allChoices.forEach(choice => {
+                let btn = document.createElement('div');
+                btn.className = "box";
+                btn.innerText = choice;
+                btn.onclick = () => check(choice);
+                choicesContainer.appendChild(btn);
+            });
         }
 
         function check(choice) {
             let fb = document.getElementById('feedback');
-            if (fb.innerText !== "") return; // Blokkeer extra klikken
-
-            if (choice === cur.d) {
-                score += 10;
-                fb.innerText = "Super! ✨ +10 pts";
+            if (choice === cur.a) {
+                localScore += 10;
+                document.getElementById('score').innerText = localScore;
+                fb.innerText = "Superwetenschappelijk! 🧪 +10 pts";
                 fb.style.color = "#10b981";
+
                 if(window.saveScoreToCloud) {
                     window.saveScoreToCloud(10);
                 }
+                setTimeout(loadQuestion, 2000);
             } else {
-                score -= 10; // Min 10 punten direct aftrekken
-                fb.innerText = `Helaas! Dit hoort bij ${cur.d}. ❌ Min 10 pts`;
+                fb.innerText = `Oeps! Het juiste antwoord was ${cur.a}. ❌`;
                 fb.style.color = "#ef4444";
-                if(window.saveScoreToCloud) {
-                    window.saveScoreToCloud(-10);
-                }
+                setTimeout(loadQuestion, 3000);
             }
-            // Meteen door naar de volgende vraag
-            setTimeout(loadQuestion, 1500);
         }
-
-        window.onload = loadQuestion;
     </script>
 </body>
 </html>

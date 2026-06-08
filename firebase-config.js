@@ -12,3 +12,71 @@ const firebaseConfig = {
   messagingSenderId: "282432178317",
   appId: "1:282432178317:web:343155ed2eb2e6ad2b3ac4",
   measurementId: "G-FS8SW0EWLL"
+
+};
+
+// Initialiseer Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// Google Login & Logout
+window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error(err));
+window.logout = () => signOut(auth);
+
+// Functie: Score opslaan/updaten in de cloud
+window.saveScoreToCloud = async function(additionalPoints) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userRef = doc(db, "leaderboard", user.uid);
+    const userSnap = await getDoc(userRef);
+    
+    let currentTotal = 0;
+    if (userSnap.exists()) {
+        currentTotal = userSnap.data().totalScore || 0;
+    }
+
+    // Voeg de nieuwe punten toe aan het huidige totaal
+    await setDoc(userRef, {
+        name: user.displayName,
+        totalScore: currentTotal + additionalPoints,
+        lastUpdated: new Date()
+    }, { merge: true });
+};
+
+// Luister naar inlogstatus en update de UI
+onAuthStateChanged(auth, (user) => {
+    const loginScreen = document.getElementById("login-screen");
+    const mainDashboard = document.getElementById("dashboard-content");
+    const userDisplay = document.getElementById("user-display");
+
+    if (user) {
+        if(loginScreen) loginScreen.style.display = "none";
+        if(mainDashboard) mainDashboard.style.display = "block";
+        if(userDisplay) userDisplay.innerText = `👋 ${user.displayName}`;
+        
+        // Als we op de index pagina zijn, laad dan live het leaderboard
+        const boardElem = document.getElementById("leaderboard-list");
+        if (boardElem) {
+            const q = query(collection(db, "leaderboard"), orderBy("totalScore", "desc"), limit(10));
+            onSnapshot(q, (snapshot) => {
+                boardElem.innerHTML = "";
+                let rank = 1;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement("div");
+                    li.className = "leaderboard-item";
+                    li.innerHTML = `<span>#${rank} ${data.name}</span> <strong>${data.totalScore} pts</strong>`;
+                    if(rank === 1) li.style.color = "var(--neon-yellow)"; // Goud voor nummer 1!
+                    boardElem.appendChild(li);
+                    rank++;
+                });
+            });
+        }
+    } else {
+        if(loginScreen) loginScreen.style.display = "flex";
+        if(mainDashboard) mainDashboard.style.display = "none";
+    }
+});

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8"><title>Aardrijkskunde Game</title>
+    <meta charset="UTF-8">
+    <title>Aardrijkskunde Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
         .arcade { background: #141423; border: 3px solid #10b981; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
@@ -20,6 +21,7 @@
         <button class="btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
+
     <script>
         const data = [
             { t: "Een fabriek zuivert al haar afvalwater voordat het de rivier in stroomt.", c: "Planet" },
@@ -27,28 +29,30 @@
             { t: "Een fabriek dumpt chemisch afval in het bos om geld te besparen.", c: "Niet" }
         ];
         let cur;
-        function load() { document.getElementById('feedback').innerText = ""; cur = data[Math.floor(Math.random() * data.length)]; document.getElementById('scenario').innerText = cur.t; }
-     function check(choice) {
-    let fb = document.getElementById('feedback');
-    if (choice === cur.d) {
-        score += 10;
-        document.getElementById('score').innerText = score;
-        fb.innerText = "Historisch correct! 👑 +10 punten";
-        fb.style.color = "var(--neon-green)";
 
-        // STUUR PUNTEN DIRECT DOOR NAAR HET KLASSENBOARD!
-        if(window.saveScoreToCloud) {
-            window.saveScoreToCloud(10);
+        function load() { 
+            document.getElementById('feedback').innerText = ""; 
+            cur = data[Math.floor(Math.random() * data.length)]; 
+            document.getElementById('scenario').innerText = cur.t; 
         }
-    } else {
-        fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌`;
-        fb.style.color = "var(--neon-red)";
-    }
-    setTimeout(loadQuestion, 1800);
-}
+
+        function check(choice) {
+            let fb = document.getElementById('feedback');
+            if(choice === cur.c) { 
+                fb.innerText = "Juist gecategoriseerd! 🌍 +10 pts"; 
+                fb.style.color = "#10b981"; 
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+            } else {
+                fb.innerText = "Oeps! Dat klopt helaas niet. ❌"; 
+                fb.style.color = "#ef4444";
+            }
+            setTimeout(load, 1500);
         }
-        load();
+
+        window.onload = load;
     </script>
+    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>
-<script type="module" src="firebase-config.js"></script>

@@ -40,17 +40,19 @@
             if(Math.abs(val - wiskundeAns) < 0.5) { 
                 fb.innerText = "🔓 GEKRAAKT! +15 pts"; 
                 fb.style.color = "#10b981"; 
-                
                 localScore += 15;
                 document.getElementById('score').innerText = localScore;
                 
-                if(window.saveScoreToCloud) {
-                    window.saveScoreToCloud(15);
-                }
+                if(window.saveScoreToCloud) window.saveScoreToCloud(15);
                 setTimeout(load, 2000);
             } else {
-                fb.innerText = `Fout! Het juiste antwoord was ${wiskundeAns} cm³. ❌`;
+                fb.innerText = `Fout! Het juiste antwoord was ${wiskundeAns} cm³. ❌ -10 pts`;
                 fb.style.color = "#ef4444";
+                
+                localScore = Math.max(0, localScore - 10); // Voorkom negatieve lokale score op scherm indien gewenst
+                document.getElementById('score').innerText = localScore;
+                
+                if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
                 setTimeout(load, 3000);
             }
         }

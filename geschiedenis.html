@@ -46,14 +46,14 @@
                 document.getElementById('score').innerText = localScore;
                 fb.innerText = "Historisch correct! 👑 +10 punten";
                 fb.style.color = "#10b981";
-
-                if(window.saveScoreToCloud) {
-                    window.saveScoreToCloud(10);
-                }
+                if(window.saveScoreToCloud) window.saveScoreToCloud(10);
                 setTimeout(loadQuestion, 2000);
             } else {
-                fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌`;
+                fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌ -10 pts`;
                 fb.style.color = "#ef4444";
+                localScore = Math.max(0, localScore - 10);
+                document.getElementById('score').innerText = localScore;
+                if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
                 setTimeout(loadQuestion, 3000);
             }
         }

@@ -3,40 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen Studie Hub 2026</title>
+    <title>Examen Game Hub 2026</title>
     <style>
         :root {
-            --primary: #4a6fa5;
-            --secondary: #13c2c2;
-            --success: #52c41a;
-            --warning: #faad14;
-            --dark: #1f1f1f;
-            --light: #f5f5f5;
+            --bg-dark: #121214;
+            --card-bg: #1f1f23;
+            --primary: #6366f1;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --text: #ffffff;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: #f0f2f5;
-            color: var(--dark);
+            background-color: var(--bg-dark);
+            color: var(--text);
             padding-bottom: 50px;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary), #2a4d7c);
-            color: white;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
             text-align: center;
             padding: 40px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            text-shadow: 0 0 10px rgba(255,255,255,0.4);
             margin-bottom: 10px;
         }
 
@@ -46,7 +46,7 @@
             padding: 0 20px;
         }
 
-        /* Home Dashboard */
+        /* Dashboard */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -54,376 +54,463 @@
             margin-top: 20px;
         }
 
-        .subject-card {
-            background: white;
+        .game-card {
+            background: var(--card-bg);
+            border: 2px solid #333;
             border-radius: 15px;
             padding: 25px;
             text-align: center;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-top: 5px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .subject-card:hover {
+        .game-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
         }
 
-        .subject-card.engels { border-top-color: #ff4d4f; }
-        .subject-card.frans { border-top-color: #1890ff; }
-        .subject-card.aardrijkskunde { border-top-color: #52c41a; }
-        .subject-card.wiskunde { border-top-color: #faad14; }
-
-        .subject-card h3 {
-            font-size: 1.4rem;
+        .game-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 10px;
-            color: #333;
         }
 
-        .subject-card p {
+        .game-card p {
+            color: #aaa;
             font-size: 0.9rem;
-            color: #666;
         }
 
-        /* Study Zones */
-        .study-zone {
+        .badge {
+            background: var(--primary);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Game Zones */
+        .game-zone {
             display: none;
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            margin-top: 20px;
-            animation: fadeIn 0.5s ease;
+            border: 1px solid #444;
+            animation: slideIn 0.4s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .btn-back {
-            background: #e8e8e8;
+            background: #333;
+            color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             transition: background 0.2s;
         }
 
-        .btn-back:hover {
-            background: #d9d9d9;
-        }
+        .btn-back:hover { background: #444; }
 
-        .game-box {
-            background: #f9f9f9;
-            border: 2px dashed #ccc;
+        /* GAME SCREEN BOX */
+        .arcade-screen {
+            background: #000;
+            border: 4px solid #333;
             border-radius: 10px;
-            padding: 20px;
+            position: relative;
+            min-height: 350px;
             margin-top: 20px;
-            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Interactive Elements */
-        .btn-action {
+        .score-board {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--neon-green);
+        }
+
+        /* Engels Game Elements */
+        #runner-player {
+            position: absolute;
+            bottom: 20px;
+            font-size: 2.5rem;
+            transition: left 0.1s ease;
+        }
+
+        .falling-item {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #6366f1;
+            font-weight: bold;
+        }
+
+        /* Buttons & Grid */
+        .btn-game {
             background: var(--primary);
             color: white;
             border: none;
             padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
             cursor: pointer;
             margin: 10px;
-            transition: background 0.2s;
-        }
-
-        .btn-action:hover { filter: brightness(1.1); }
-
-        /* Flashcard Styling */
-        .flashcard {
-            width: 280px;
-            height: 180px;
-            margin: 20px auto;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .flashcard-inner {
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-
-        .flashcard.flipped .flashcard-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flashcard-front, .flashcard-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
             font-weight: bold;
-            padding: 15px;
-            border-radius: 10px;
         }
 
-        .flashcard-front { background: #e6f7ff; color: #1890ff; }
-        .flashcard-back { background: #1890ff; color: white; transform: rotateY(180deg); }
+        .btn-game:hover { filter: brightness(1.2); }
 
-        /* Quiz Choices */
-        .choices-grid {
+        .choice-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            max-width: 500px;
-            margin: 20px auto;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
         }
 
-        .choice-btn {
-            background: white;
-            border: 2px solid #d9d9d9;
-            padding: 15px;
-            border-radius: 8px;
+        .choice-box {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            padding: 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
+            text-align: center;
+            font-size: 1.1rem;
         }
 
-        .choice-btn:hover {
+        .choice-box:hover {
             border-color: var(--primary);
-            background: #f0f7ff;
+            background: #252529;
         }
 
         input[type="number"] {
-            padding: 10px;
-            font-size: 1rem;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            width: 120px;
+            background: #222;
+            color: white;
+            border: 2px solid #555;
+            padding: 12px;
+            font-size: 1.3rem;
+            border-radius: 8px;
             text-align: center;
-            margin: 10px;
+            width: 160px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Examen Studie Hub ✨</h1>
-        <p>Studeer interactief en leuk voor de examens van juni 2026!</p>
+        <h1>🎮 Study Game Arena 2026 ⚡</h1>
+        <p>Haal hogere cijfers door vette games te spelen met je leerstof!</p>
     </header>
 
     <div class="container">
-        
+
         <div id="home-dashboard">
-            <h2 style="margin-bottom: 15px;">Kies een vak om te oefenen:</h2>
+            <h2 style="margin-bottom: 20px;">Selecteer je Game Mode:</h2>
             <div class="dashboard">
-                <div class="subject-card engels" onclick="openZone('zone-engels')">
+                <div class="game-card" onclick="openGame('zone-engels', startEngelsGame)">
                     <h3>🇬🇧 Engels</h3>
-                    <p>Unit 3 t/m 7<br>Grammar & Situations</p>
+                    <p>Grammar Runner</p>
+                    <span class="badge">Arrangements & Dates</span>
                 </div>
-                <div class="subject-card frans" onclick="openZone('zone-frans')">
+                <div class="game-card" onclick="openGame('zone-frans', startFransGame)">
                     <h3>🇫🇷 Frans</h3>
-                    <p>Vocabulaire & Grammaire<br>Météo & Corps</p>
+                    <p>Vocab Catcher</p>
+                    <span class="badge">Météo & Corps</span>
                 </div>
-                <div class="subject-card aardrijkskunde" onclick="openZone('zone-aardrijkskunde')">
+                <div class="game-card" onclick="openGame('zone-aardrijkskunde', startAKGame)">
                     <h3>🌍 Aardrijkskunde</h3>
-                    <p>Duurzaamheid & Klimaat<br>De 3 P's Check</p>
+                    <p>The 3 P's Sorter</p>
+                    <span class="badge">Duurzaamheid</span>
                 </div>
-                <div class="subject-card wiskunde" onclick="openZone('zone-wiskunde')">
+                <div class="game-card" onclick="openGame('zone-wiskunde', startWiskundeGame)">
                     <h3>📐 Wiskunde</h3>
-                    <p>3D-Objecten & Formules<br>Volume Berekenen</p>
+                    <p>Kluis Kraker</p>
+                    <span class="badge">Volume Cilinder</span>
                 </div>
             </div>
         </div>
 
-        <div id="zone-engels" class="study-zone">
-            <button class="btn-back" onclick="goHome()">⬅ Terug naar Home</button>
-            <h2>Engels: Restaurant & Date Simulator 🍔📅</h2>
-            <p>Oefen interactief je <i>Restaurant phrases</i> en het schrijven van datums!</p>
+        <div id="zone-engels" class="game-zone">
+            <button class="btn-back" onclick="goHome()">⬅ Dashboard</button>
+            <h2>Engels: Grammar Runner 🏃‍♂️</h2>
+            <p>Gebruik de knoppen om de speler te sturen naar het juiste antwoord!</p>
             
-            <div class="game-box">
-                <div id="engels-quest">
-                    <p style="font-size: 1.2rem; margin-bottom: 15px;" id="engels-instruction">Laatst bestelde je eten in een restaurant. Hoe vraag je netjes om de rekening?</p>
-                    <div id="engels-options">
-                        <button class="btn-action" onclick="checkEngels(true)">"Could we have the bill, please?"</button>
-                        <button class="btn-action" onclick="checkEngels(false)">"Give me the money chart!"</button>
+            <div class="arcade-screen" id="engels-screen">
+                <div class="score-board">Score: <span id="engels-score">0</span></div>
+                <div id="engels-quest-text" style="position: absolute; top: 50px; font-size: 1.3rem; font-weight: bold; text-align: center; width: 90%;"></div>
+                
+                <div id="engels-left-option" class="falling-item" style="top: 150px; left: 15%;" onclick="chooseEngels('left')">Optie A</div>
+                <div id="engels-right-option" class="falling-item" style="top: 150px; right: 15%;" onclick="chooseEngels('right')">Optie B</div>
+
+                <div id="runner-player" style="left: 45%;">🕹️</div>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-game" onclick="movePlayer('left')">◀ Stuur Links</button>
+                <button class="btn-game" onclick="movePlayer('right')">Stuur Rechts ▶</button>
+            </div>
+        </div>
+
+        <div id="zone-frans" class="game-zone">
+            <button class="btn-back" onclick="goHome()">⬅ Dashboard</button>
+            <h2>Frans: Woordenschat Klik-Catcher ⚡</h2>
+            <p>Klik zo snel mogelijk op de juiste Franse vertaling van het woord om punten te verdienen!</p>
+            
+            <div class="arcade-screen">
+                <div class="score-board">Score: <span id="frans-score">0</span></div>
+                <div style="font-size: 1.1rem; color: #aaa; margin-bottom: 5px;">Wat is de vertaling van:</div>
+                <div id="frans-target" style="font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 20px;">...</div>
+                
+                <div class="choice-grid" id="frans-choices">
                     </div>
-                </div>
-                <p id="engels-feedback" style="margin-top: 15px; font-weight: bold;"></p>
+                <div id="frans-feedback" style="font-weight: bold; font-size: 1.2rem;"></div>
             </div>
         </div>
 
-        <div id="zone-frans" class="study-zone">
-            <button class="btn-back" onclick="goHome()">⬅ Terug naar Home</button>
-            <h2>Frans: Woordenschat Flitskaarten 🌦🥖</h2>
-            <p>Klik op de kaart om de vertaling van het Franse woord te zien!</p>
+        <div id="zone-aardrijkskunde" class="game-zone">
+            <button class="btn-back" onclick="goHome()">⬅ Dashboard</button>
+            <h2>Aardrijkskunde: The 3 P's Sorter 🌱</h2>
+            <p>Sorteer de situatie in de juiste categorie van duurzaamheid: People (Mensen), Planet (Milieu) of Prosperity (Economie)!</p>
             
-            <div class="flashcard" onclick="this.classList.toggle('flipped')">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front" id="frans-front">La météo</div>
-                    <div class="flashcard-back" id="frans-back">Het weer</div>
+            <div class="arcade-screen">
+                <div class="score-board">Score: <span id="ak-score">0</span></div>
+                <div id="ak-scenario" style="font-size: 1.2rem; text-align: center; padding: 20px; max-width: 80%;">Laden...</div>
+                
+                <div class="choice-grid">
+                    <div class="choice-box" onclick="sortAK('People')">👥 People</div>
+                    <div class="choice-box" onclick="sortAK('Planet')">🌍 Planet</div>
+                    <div class="choice-box" onclick="sortAK('Prosperity')">💰 Prosperity</div>
+                    <div class="choice-box" onclick="sortAK('Niet')">🛑 Niet Duurzaam</div>
                 </div>
-            </div>
-            <div style="text-align: center;">
-                <button class="btn-action" onclick="nextFransCard()">Volgende Kaart ➡</button>
+                <div id="ak-feedback" style="font-weight: bold; font-size: 1.2rem;"></div>
             </div>
         </div>
 
-        <div id="zone-aardrijkskunde" class="study-zone">
-            <button class="btn-back" onclick="goHome()">⬅ Terug naar Home</button>
-            <h2>Aardrijkskunde: Duurzaamheids-Check (3 P's) 🌱</h2>
-            <p>Beoordeel of situaties duurzaam zijn op basis van <b>People, Planet & Prosperity</b>!</p>
+        <div id="zone-wiskunde" class="game-zone">
+            <button class="btn-back" onclick="goHome()">⬅ Dashboard</button>
+            <h2>Wiskunde: Formule KluisKraker 🔐</h2>
+            <p>Bereken het volume van de cilinders om de kluiscodes te kraken! (Formule: V = 3.14 * r² * h)</p>
             
-            <div class="game-box">
-                <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;" id="ak-question">Situatie: Nike hergebruikt materialen in hun distributiecentrum om afval te verminderen.</p>
-                <div class="choices-grid">
-                    <button class="choice-btn" onclick="checkAK(true)">Duurzaam (Goed voor Planet/Prosperity)</button>
-                    <button class="choice-btn" onclick="checkAK(false)">Niet duurzaam</button>
-                </div>
-                <p id="ak-feedback" style="font-weight: bold; margin-top: 10px;"></p>
-            </div>
-        </div>
-
-        <div id="zone-wiskunde" class="study-zone">
-            <button class="btn-back" onclick="goHome()">⬅ Terug naar Home</button>
-            <h2>Wiskunde: Ruimtefiguren Volume Simulator 🧪</h2>
-            <p>Bereken het volume van een cilinder. Formule: <b>V = π * r² * h</b> (neem π = 3,14)</p>
-            
-            <div class="game-box">
-                <p style="font-size: 1.1rem; margin-bottom: 15px;">Een cilinder heeft een straal (r) van <b>3 cm</b> en een hoogte (h) van <b>10 cm</b>.</p>
-                <label>Jouw berekende volume (in cm³):</label><br>
-                <input type="number" id="wiskunde-input" placeholder="Antwoord...">
-                <br>
-                <button class="btn-action" onclick="checkWiskunde()">Controleer Antwoord</button>
-                <p id="wiskunde-feedback" style="font-weight: bold; margin-top: 15px;"></p>
+            <div class="arcade-screen">
+                <div style="font-size: 4rem; margin-bottom: 10px;">🔓</div>
+                <div id="wiskunde-quest" style="font-size: 1.2rem; text-align: center; margin-bottom: 20px; max-width: 80%;">...</div>
+                <input type="number" id="vault-input" step="0.1" placeholder="Volume...">
+                <button class="btn-game" onclick="crackVault()">Kraak de kluis!</button>
+                <div id="wiskunde-feedback" style="font-weight: bold; font-size: 1.2rem; margin-top: 10px;"></div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // Navigatie Functies
-        function openZone(zoneId) {
+        // Navigatie
+        function openGame(zoneId, startFunction) {
             document.getElementById('home-dashboard').style.display = 'none';
-            // Verberg alle zones
-            let zones = document.getElementsByClassName('study-zone');
+            let zones = document.getElementsByClassName('game-zone');
             for(let zone of zones) { zone.style.display = 'none'; }
-            // Toon gekozen zone
             document.getElementById(zoneId).style.display = 'block';
+            if(startFunction) startFunction();
         }
 
         function goHome() {
-            let zones = document.getElementsByClassName('study-zone');
+            let zones = document.getElementsByClassName('game-zone');
             for(let zone of zones) { zone.style.display = 'none'; }
             document.getElementById('home-dashboard').style.display = 'block';
         }
 
-        // ENGELS LOGICA
-        let engelsStep = 1;
-        function checkEngels(isCorrect) {
-            let feedback = document.getElementById('engels-feedback');
-            if (engelsStep === 1) {
-                if(isCorrect) {
-                    feedback.innerHTML = "Excellent! Daarmee kun je netjes betalen. 🌟";
-                    feedback.style.color = "var(--success)";
-                    setTimeout(nextEngelsQuest, 2000);
-                } else {
-                    feedback.innerHTML = "Oeps! Dat is niet heel beleefd in een restaurant. Probeer opnieuw!";
-                    feedback.style.color = "red";
-                }
-            } else {
-                if(isCorrect) {
-                    feedback.innerHTML = "Wauw! Je kunt perfect datums schrijven in het Engels! 📅";
-                    feedback.style.color = "var(--success)";
-                } else {
-                    feedback.innerHTML = "Bijna, denk aan de 'th' bij ordinale getallen!";
-                    feedback.style.color = "red";
-                }
-            }
-        }
-
-        function nextEngelsQuest() {
-            engelsStep = 2;
-            document.getElementById('engels-instruction').innerText = "Hoe schrijf je de datum '4 juni' correct met een rangtelwoord (ordinal number)?";
-            document.getElementById('engels-options').innerHTML = `
-                <button class="btn-action" onclick="checkEngels(true)">"June 4th"</button>
-                <button class="btn-action" onclick="checkEngels(false)">"June 4"</button>
-            `;
-            document.getElementById('engels-feedback').innerText = "";
-        }
-
-        // FRANS LOGICA
-        let fransCards = [
-            {f: "Les parties du corps", b: "De lichaamsdelen"},
-            {f: "Le plan de ville", b: "De plattegrond van de stad"},
-            {f: "Les premiers secours", b: "De eerste hulp (EHBO)"},
-            {f: "être malade", b: "Ziek zijn"}
+        // ==========================================
+        // ENGELS GAME LOGICA (Grammar Runner)
+        // ==========================================
+        let engelsScore = 0;
+        let engelsIndex = 0;
+        let engelsData = [
+            { q: "We ___ (have) a party tomorrow evening! (Arrangement)", a: "are having", b: "have", correct: "left" },
+            { q: "Hoe schrijf je 3 juni in een Engelse brief?", a: "June 3rd", b: "June 3th", correct: "left" },
+            { q: "I ___ (meet) the doctor at 4 PM today.", a: "meet", b: "am meeting", correct: "right" },
+            { q: "Hoe schrijf je de datum 22 juni?", a: "June 22nd", b: "June 22st", correct: "left" }
         ];
-        let currentFransIndex = 0;
 
-        function nextFransCard() {
-            currentFransIndex = (currentFransIndex + 1) % fransCards.length;
-            let cardElement = document.querySelector('.flashcard');
-            cardElement.classList.remove('flipped');
-            
-            setTimeout(() => {
-                document.getElementById('frans-front').innerText = fransCards[currentFransIndex].f;
-                document.getElementById('frans-back').innerText = fransCards[currentFransIndex].b;
-            }, 200);
+        function startEngelsGame() {
+            engelsScore = 0;
+            engelsIndex = 0;
+            document.getElementById('engels-score').innerText = engelsScore;
+            loadEngelsQuestion();
         }
 
-        // AARDRIJKSKUNDE LOGICA
-        let akStep = 1;
-        function checkAK(isCorrect) {
-            let feedback = document.getElementById('ak-feedback');
-            if (akStep === 1) {
-                if (isCorrect) {
-                    feedback.innerHTML = "Helemaal juist! Dit spaart natuurlijke hulpbronnen (Planet). 🌍";
-                    feedback.style.color = "var(--success)";
-                    setTimeout(nextAKQuest, 2500);
-                } else {
-                    feedback.innerHTML = "Probeer het nog eens! Materialen hergebruiken is juist heel groen.";
-                    feedback.style.color = "red";
-                }
+        function loadEngelsQuestion() {
+            if(engelsIndex >= engelsData.length) {
+                document.getElementById('engels-quest-text').innerText = "🎉 Gefeliciteerd! Je hebt alle Engelse levels uitgespeeld!";
+                return;
+            }
+            let current = engelsData[engelsIndex];
+            document.getElementById('engels-quest-text').innerText = current.q;
+            document.getElementById('engels-left-option').innerText = current.a;
+            document.getElementById('engels-right-option').innerText = current.b;
+        }
+
+        function movePlayer(direction) {
+            let player = document.getElementById('runner-player');
+            if(direction === 'left') {
+                player.style.left = "15%";
+                setTimeout(() => { chooseEngels('left'); }, 200);
             } else {
-                if (!isCorrect) {
-                    feedback.innerHTML = "Correct! Een hoge CO2-uitstoot versterkt het broeikaseffect en is niet duurzaam. 🛑";
-                    feedback.style.color = "var(--success)";
-                } else {
-                    feedback.innerHTML = "Denk aan de planeet! Veel CO2 zorgt voor klimaatverandering.";
-                    feedback.style.color = "red";
-                }
+                player.style.left = "75%";
+                setTimeout(() => { chooseEngels('right'); }, 200);
             }
         }
 
-        function nextAKQuest() {
-            akStep = 2;
-            document.getElementById('ak-question').innerText = "Situatie: Een fabriek stoot heel veel fijnstof en CO2 uit om snel en goedkoop schoenen te maken.";
-            document.getElementById('ak-feedback').innerText = "";
+        function chooseEngels(side) {
+            let current = engelsData[engelsIndex];
+            if(side === current.correct) {
+                engelsScore += 10;
+                document.getElementById('engels-score').innerText = engelsScore;
+            }
+            engelsIndex++;
+            setTimeout(() => {
+                document.getElementById('runner-player').style.left = "45%";
+                loadEngelsQuestion();
+            }, 500);
         }
 
-        // WISKUNDE LOGICA
-        function checkWiskunde() {
-            let input = document.getElementById('wiskunde-input').value;
-            let feedback = document.getElementById('wiskunde-feedback');
-            // V = 3.14 * 3^2 * 10 = 3.14 * 9 * 10 = 282.6
-            if (Math.abs(parseFloat(input) - 282.6) < 0.5) {
-                feedback.innerHTML = "Perfect berekend! Het volume is inderdaad 282,6 cm³. Jij bent klaar voor de ruimtefiguren! 📐💎";
-                feedback.style.color = "var(--success)";
+        // ==========================================
+        // FRANS GAME LOGICA (Vocab Catcher)
+        // ==========================================
+        let fransScore = 0;
+        let fransData = [
+            { nl: "Het weer", fr: "La météo", fakes: ["Le corps", "La ville"] },
+            { nl: "De lichaamsdelen", fr: "Les parties du corps", fakes: ["Les magasins", "Le plan"] },
+            { nl: "Ziek zijn", fr: "Être malade", fakes: ["Les premiers secours", "La météo"] },
+            { nl: "De eerste hulp (EHBO)", fr: "Les premiers secours", fakes: ["Être malade", "Les saisons"] },
+            { nl: "De plattegrond van de stad", fr: "Le plan de ville", fakes: ["Les bâtiments", "La météo"] }
+        ];
+        let currentFrans;
+
+        function startFransGame() {
+            fransScore = 0;
+            document.getElementById('frans-score').innerText = fransScore;
+            nextFransRound();
+        }
+
+        function nextFransRound() {
+            document.getElementById('frans-feedback').innerText = "";
+            currentFrans = fransData[Math.floor(Math.random() * fransData.length)];
+            document.getElementById('frans-target').innerText = currentFrans.nl;
+
+            let choices = [currentFrans.fr, ...currentFrans.fakes];
+            choices.sort(() => Math.random() - 0.5); // Schud de antwoorden
+
+            let grid = document.getElementById('frans-choices');
+            grid.innerHTML = "";
+            choices.forEach(choice => {
+                let box = document.createElement('div');
+                box.className = "choice-box";
+                box.innerText = choice;
+                box.onclick = () => checkFransAnswer(choice);
+                grid.appendChild(box);
+            });
+        }
+
+        function checkFransAnswer(chosen) {
+            let feedback = document.getElementById('frans-feedback');
+            if(chosen === currentFrans.fr) {
+                fransScore += 15;
+                document.getElementById('frans-score').innerText = fransScore;
+                feedback.innerText = "Très bien! +15 punten 🌟";
+                feedback.style.color = "var(--neon-green)";
             } else {
-                feedback.innerHTML = "Nog niet helemaal. Berekening: 3,14 * (3 * 3) * 10. Rekenen nog eens na!";
-                feedback.style.color = "red";
+                feedback.innerText = "Oeps! Foutje. Probeer de volgende.";
+                feedback.style.color = "var(--neon-red)";
+            }
+            setTimeout(nextFransRound, 1500);
+        }
+
+        // ==========================================
+        // AARDRIJKSKUNDE LOGICA (3 P's Sorter)
+        // ==========================================
+        let akScore = 0;
+        let akData = [
+            { text: "Een bedrijf vermindert CO2-uitstoot door zonnepanelen te plaatsen.", cat: "Planet" },
+            { text: "Zorgen voor veilige werkomstandigheden en eerlijke lonen voor arbeiders.", cat: "People" },
+            { text: "Een fabriek maakt winst en creëert banen in de regio zonder de natuur te schaden.", cat: "Prosperity" },
+            { text: "Een kledingmerk loost chemisch gif in de rivier om kosten te besparen.", cat: "Niet" }
+        ];
+        let currentAK;
+
+        function startAKGame() {
+            akScore = 0;
+            document.getElementById('ak-score').innerText = akScore;
+            nextAKRound();
+        }
+
+        function nextAKRound() {
+            document.getElementById('ak-feedback').innerText = "";
+            currentAK = akData[Math.floor(Math.random() * akData.length)];
+            document.getElementById('ak-scenario').innerText = currentAK.text;
+        }
+
+        function sortAK(category) {
+            let feedback = document.getElementById('ak-feedback');
+            if(category === currentAK.cat) {
+                akScore += 10;
+                document.getElementById('ak-score').innerText = akScore;
+                feedback.innerText = "Juist gecategoriseerd! 🌍⚡";
+                feedback.style.color = "var(--neon-green)";
+            } else {
+                feedback.innerText = "Incorrect! Denk aan het verschil tussen People, Planet & Prosperity.";
+                feedback.style.color = "var(--neon-red)";
+            }
+            setTimeout(nextAKRound, 2000);
+        }
+
+        // ==========================================
+        // WISKUNDE LOGICA (Kluis Kraker)
+        // ==========================================
+        let wiskundeAnswer = 0;
+
+        function startWiskundeGame() {
+            document.getElementById('wiskunde-feedback').innerText = "";
+            document.getElementById('vault-input').value = "";
+            
+            // Genereer willekeurige waarden voor cilinder
+            let r = Math.floor(Math.random() * 4) + 2; // straal 2 tot 5
+            let h = Math.floor(Math.random() * 5) + 5; // hoogte 5 tot 10
+            
+            // V = 3.14 * r² * h
+            wiskundeAnswer = 3.14 * (r * r) * h;
+            wiskundeAnswer = Math.round(wiskundeAnswer * 10) / 10; // Rond af op 1 decimaal
+
+            document.getElementById('wiskunde-quest').innerHTML = `Kraak de code! Bereken het volume van een cilinder met een straal (r) van <b>${r} cm</b> en een hoogte (h) van <b>${h} cm</b>.`;
+        }
+
+        function crackVault() {
+            let input = parseFloat(document.getElementById('vault-input').value);
+            let feedback = document.getElementById('wiskunde-feedback');
+            
+            if(Math.abs(input - wiskundeAnswer) < 0.5) {
+                feedback.innerText = "🔓 KLAAR! De kluis springt open! Je hebt de formule perfect opgelost! ⭐";
+                feedback.style.color = "var(--neon-green)";
+                setTimeout(startWiskundeGame, 3000);
+            } else {
+                feedback.innerText = `🚨 Foute code! (Tip: bereken 3.14 * ${input}...) Probeer opnieuw!`;
+                feedback.style.color = "var(--neon-red)";
             }
         }
     </script>

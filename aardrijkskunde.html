@@ -28,11 +28,24 @@
         ];
         let cur;
         function load() { document.getElementById('feedback').innerText = ""; cur = data[Math.floor(Math.random() * data.length)]; document.getElementById('scenario').innerText = cur.t; }
-        function check(choice) {
-            let fb = document.getElementById('feedback');
-            if(choice === cur.c) { fb.innerText = "Juist gecategoriseerd! 🌍"; fb.style.color = "#10b981"; }
-            else { fb.innerText = "Onjuist! ❌"; fb.style.color = "#ef4444"; }
-            setTimeout(load, 1500);
+     function check(choice) {
+    let fb = document.getElementById('feedback');
+    if (choice === cur.d) {
+        score += 10;
+        document.getElementById('score').innerText = score;
+        fb.innerText = "Historisch correct! 👑 +10 punten";
+        fb.style.color = "var(--neon-green)";
+
+        // STUUR PUNTEN DIRECT DOOR NAAR HET KLASSENBOARD!
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
+        }
+    } else {
+        fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌`;
+        fb.style.color = "var(--neon-red)";
+    }
+    setTimeout(loadQuestion, 1800);
+}
         }
         load();
     </script>

@@ -52,15 +52,15 @@
                 fb.style.color = "#10b981"; 
                 localScore += 10;
                 document.getElementById('score').innerText = localScore;
-                
-                if(window.saveScoreToCloud) {
-                    window.saveScoreToCloud(10);
-                }
+                if(window.saveScoreToCloud) window.saveScoreToCloud(10);
                 idx++;
                 setTimeout(load, 2000);
             } else {
-                fb.innerText = "Helaas, fout antwoord! ❌"; 
+                fb.innerText = "Helaas, fout antwoord! ❌ -10 pts"; 
                 fb.style.color = "#ef4444";
+                localScore = Math.max(0, localScore - 10);
+                document.getElementById('score').innerText = localScore;
+                if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
                 idx++;
                 setTimeout(load, 2000);
             }

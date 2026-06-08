@@ -27,12 +27,26 @@
             document.getElementById('target').innerHTML = `Bereken het volume van een cilinder met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = 3.14 * r² * h)`;
         }
         function check() {
-            let val = parseFloat(document.getElementById('ans').value);
-            let fb = document.getElementById('feedback');
-            if(Math.abs(val - wiskundeAns) < 0.5) { fb.innerText = "🔓 GEKRAAKT!"; fb.style.color = "#10b981"; setTimeout(load, 2500); }
-            else { fb.innerText = "🚨 FOUTE CODE!"; fb.style.color = "#ef4444"; }
+    let val = parseFloat(document.getElementById('ans').value);
+    let fb = document.getElementById('feedback');
+    if(Math.abs(val - wiskundeAns) < 0.5) { 
+        fb.innerText = "🔓 GEKRAAKT! +15 pts"; 
+        fb.style.color = "#10b981"; 
+        
+        // WISKUNDE IS MOEILIJKER, DUS GEEFT 15 PUNTEN!
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(15);
+        }
+        setTimeout(load, 2500); 
+    }
+    else { 
+        fb.innerText = "🚨 FOUTE CODE!"; 
+        fb.style.color = "#ef4444"; 
+    }
+}
         }
         load();
     </script>
 </body>
 </html>
+<script type="module" src="firebase-config.js"></script>

@@ -2,29 +2,31 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Nederlands Game</title>
+    <title>Nederlands Game - Expert Edition</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
+        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 650px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
         .grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.1rem; text-align: left; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 18px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
         .box:hover { border-color: #3b82f6; background: #1c1c38; }
     </style>
 </head>
 <body>
     <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
-        <h2>Verbanden & Grammatica Puzzel 🇳🇱</h2>
-        <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0; color: #3b82f6;"></p>
+        <h2>Taal & Grammatica Masterclass 🇳🇱</h2>
+        <p>Analyseer de stelling en kies het juiste taalkundige antwoord:</p>
+        <h1 id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0; color: #3b82f6;"></h1>
         <div class="grid" id="choices"></div>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
 
     <script>
         const data = [
-            { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "Het voorbijrijdende verkeer"] },
-            { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan.", "Trapt Jan de bal?"] },
-            { q: "Wat is het GEVOLG in: 'Er was een stroomstoring, waardoor de computers uitvielen.'", a: "De computers vielen uit", f: ["Er was een stroomstoring", "De lichten gingen aan"] }
+            { q: "Welk woord is hier volledig correct gespeld (Les 28 - Woordtekens)?", a: "zee-eend en drieëndertig", f: ["zeeëend en drie-en-dertig", "zeeeend en drieëndertig"] },
+            { q: "Wat is de structuur van deze zin: 'Hoewel hij hard studeerde voor Frans, vond hij het examen erg complex.'", a: "Een samengestelde zin met een bijzin (ingeleid door een voegwoord) en een hoofdzin.", f: ["Een enkelvoudige zin met meerdere persoonsvormen.", "Een samengestelde zin die volledig bestaat uit twee nevengeschikte hoofdzinnen."] },
+            { q: "Zet deze passieve zin correct om naar een ACTIEVE zin: 'De historische bronnen werden door de leerlingen grondig geanalyseerd.'", a: "De leerlingen analyseerden de historische bronnen grondig.", f: ["De leerlingen hebben de historische bronnen grondig geanalyseerd.", "De historische bronnen analyseerden de leerlingen grondig."] },
+            { q: "Wat is de grammaticale functie van het onderstreepte zinsdeel: 'De leerkracht gaf *aan de ijverige leerling* een hogere score.'", a: "Meewerkend voorwerp", f: ["Lijdend voorwerp", "Voorzetselvoorwerp"] }
         ];
         let cur;
 
@@ -42,12 +44,12 @@
                 d.onclick = () => {
                     let fb = document.getElementById('feedback');
                     if(c === cur.a) { 
-                        fb.innerText = "Taalmeester! ✨ +10 pts"; 
+                        fb.innerText = "Indrukwekkend! Perfect geanalyseerd. 👑 +15 pts"; 
                         fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(10); }
-                        setTimeout(load, 1500);
+                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
+                        setTimeout(load, 1800);
                     } else { 
-                        fb.innerText = "Probeer opnieuw! ❌ Dat was niet het goede antwoord."; 
+                        fb.innerText = "Helaas! ❌ Dat klopt grammaticaal niet. Kijk goed naar de zinsconstructie."; 
                         fb.style.color = "#ef4444"; 
                     }
                 };

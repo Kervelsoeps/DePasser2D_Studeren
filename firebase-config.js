@@ -18,40 +18,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
 const provider = new GoogleAuthProvider();
+// Dit dwingt Google om telkens het account-keuzescherm te tonen
+provider.setCustomParameters({ prompt: 'select_account' });
 
 let currentUser = null;
 
-// Google Login & Logout
-window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error(err));
+// GLOBALE FUNCTIES: Zorg dat HTML hierbij kan
+window.loginWithGoogle = async () => {
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (err) {
+        console.error("Inlogfout:", err);
+        alert("Inloggen mislukt. Open je dit bestand via Live Server (http://...)?");
+    }
+};
+
 window.logout = () => signOut(auth).catch(err => console.error(err));
 
-// GLOBALE FUNCTIE: Score opslaan (en optellen OF aftrekken) in de Cloud
 window.saveScoreToCloud = async (points) => {
     if (!currentUser) return;
-    
     const userDocRef = doc(db, "leaderboard", currentUser.uid);
     try {
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
-            // Tel de punten op (of trek af als 'points' negatief is, bijv. -10)
-            await updateDoc(userDocRef, {
-                totalScore: increment(points)
-            });
+            await updateDoc(userDocRef, { totalScore: increment(points) });
         } else {
-            // Als het de eerste keer is en de speler verliest punten, begin op 0. Anders met de verdiende punten.
-            const startingPoints = points < 0 ? 0 : points;
             await setDoc(userDocRef, {
                 name: currentUser.displayName || "Anonieme Passer",
-                totalScore: startingPoints
+                totalScore: points < 0 ? 0 : points
             });
         }
     } catch (error) {
-        console.error("Fout bij het updaten van de score:", error);
+        console.error("Fout bij opslaan score:", error);
     }
 };
 
-// Auth State Monitor & Leaderboard Live Update
+// Luister naar in- en uitloggen
 onAuthStateChanged(auth, (user) => {
     const loginScreen = document.getElementById("login-screen");
     const mainDashboard = document.getElementById("dashboard-content");
@@ -66,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
         
         const boardElem = document.getElementById("leaderboard-list");
         if (boardElem) {
-            const q = query(collection(db, \"leaderboard\"), orderBy(\"totalScore\", \"desc\"), limit(10));
+            const q = query(collection(db, "leaderboard"), orderBy("totalScore", "desc"), limit(10));
             onSnapshot(q, (snapshot) => {
                 boardElem.innerHTML = "";
                 let rank = 1;
@@ -77,8 +81,6 @@ onAuthStateChanged(auth, (user) => {
                     li.style.display = "flex";
                     li.style.justifyContent = "space-between";
                     li.style.padding = "8px 0";
-                    li.style.borderBottom = "1px solid #2a2a4a";
-                    
                     li.innerHTML = `<span>#${rank} ${data.name}</span> <strong>${data.totalScore} pts</strong>`;
                     if(rank === 1) li.style.color = "var(--neon-yellow)";
                     boardElem.appendChild(li);

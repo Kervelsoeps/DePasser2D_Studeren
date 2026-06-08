@@ -1,67 +1,61 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Aardrijkskunde Game - Volledige Examenstof</title>
+    <meta charset="UTF-8"><title>Aardrijkskunde Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #10b981; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
-        .box:hover { border-color: #10b981; background: #1c1c38; }
-        .badge { background: #10b981; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
+        .arcade { background: #141423; border: 3px solid #10b981; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+        .btn { background: #111122; color: white; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; width: 40%; font-size: 1rem; }
+        .btn:hover { border-color: #10b981; }
     </style>
 </head>
-<body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
+<body onload="load()">
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
-        <h2>The 3 P's & Landschap Sorter 🌱🌍</h2>
-        <p>Evalueer de geografische of duurzame situatie (OV3: Hoe duurzaam is mijn leefomgeving?):</p>
-        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
-        <h1 id="target" style="font-size: 1.2rem; font-weight: bold; margin: 15px 0; color: #10b981;"></h1>
-        <div class="grid" id="choices"></div>
+        <h2>The 3 P's Sorter 🌱</h2>
+        <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
+        <p id="scenario" style="font-size: 1.2rem; margin: 25px 0; font-weight: bold;"></p>
+        <button class="btn" onclick="check('People')">👥 People</button>
+        <button class="btn" onclick="check('Planet')">🌍 Planet</button>
+        <button class="btn" onclick="check('Prosperity')">💰 Prosperity</button>
+        <button class="btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
 
+    <script type="module" src="firebase-config.js"></script>
     <script>
         const data = [
-            { t: "Duurzaamheid: Planet", q: "Een fabriek zuivert al haar industrieel afvalwater volledig voordat het de rivier instroomt. Welke P is dit?", a: "Planet (Milieu & Natuur)", f: ["People (Sociale rechtvaardigheid)", "Prosperity (Economische winst)"] },
-            { t: "Duurzaamheid: People", q: "Een kledingmerk garandeert een veilig werkklimaat en eerlijke minimumlonen voor de arbeiders. Welke P is dit?", a: "People (Mens & Maatschappij)", f: ["Planet (Milieu)", "Prosperity (Economie)"] },
-            { t: "Duurzaamheid: Niet duurzaam", q: "Een bedrijf dumpt giftig afval illegaal in een natuurgebied om kosten te besparen. Hoe categoriseer je dit?", a: "Niet Duurzaam (Schade aan People & Planet voor snelle Prosperity)", f: ["Duurzame Prosperity", "Zuivere Planet-strategie"] },
-            { t: "Geografische relaties", q: "Als we onderzoeken hoe het reliëf (fysisch) de bouw van huizen en wegen (sociaal) beïnvloedt, spreken we van een:", a: "Verticale relatie tussen landschapslagen", f: ["Horizontale relatie op mondiaal niveau", "Zuiver klimatologische transitie"] },
-            { t: "Ruimtelijke schaalniveaus", q: "Je vergelijkt de impact van de opwarming van de aarde tussen Europa, Azië en Afrika. Op welk schaalniveau werk je?", a: "Continentaal / Mondiaal niveau", f: ["Lokaal / Regionaal niveau", "Nationaal niveau"] }
+            { t: "Een fabriek zuivert al haar afvalwater voordat het de rivier in stroomt.", c: "Planet" },
+            { t: "Zorgen voor eerlijke lonen en veilige werkplekken voor arbeiders.", c: "People" },
+            { t: "Een fabriek dumpt chemisch afval in het bos om geld te besparen.", c: "Niet" }
         ];
         let cur;
+        let localScore = 0;
 
-        function load() {
-            document.getElementById('feedback').innerText = "";
-            document.getElementById('choices').innerHTML = "";
-            cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
-            document.getElementById('target').innerText = cur.q;
-
-            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            options.forEach(c => {
-                let d = document.createElement('button');
-                d.className = 'box';
-                d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { 
-                        fb.innerText = "Geografisch meesterlijk! 🌍 +15 pts"; 
-                        fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
-                        setTimeout(load, 1500);
-                    } else { 
-                        fb.innerText = "Helaas onjuist. Kijk de definities van de 3 P's na in je klasmap."; 
-                        fb.style.color = "#ef4444"; 
-                    }
-                };
-                document.getElementById('choices').appendChild(d);
-            });
+        function load() { 
+            document.getElementById('feedback').innerText = ""; 
+            cur = data[Math.floor(Math.random() * data.length)]; 
+            document.getElementById('scenario').innerText = cur.t; 
         }
-        load();
+
+        function check(choice) {
+            let fb = document.getElementById('feedback');
+            if(choice === cur.c) { 
+                fb.innerText = "Juist gecategoriseerd! 🌍 +10 pts"; 
+                fb.style.color = "#10b981"; 
+                localScore += 10;
+                document.getElementById('score').innerText = localScore;
+                
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+                setTimeout(load, 2000);
+            } else {
+                fb.innerText = "Oeps! Dat klopt helaas niet. ❌"; 
+                fb.style.color = "#ef4444";
+                setTimeout(load, 2000);
+            }
+        }
     </script>
-    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

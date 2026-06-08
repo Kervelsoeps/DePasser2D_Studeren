@@ -32,12 +32,23 @@
             document.getElementById('optB').innerText = data[idx].b;
             document.getElementById('feedback').innerText = "";
         }
-        function answer(side) {
-            let fb = document.getElementById('feedback');
-            if(side === data[idx].c) { fb.innerText = "Correct! ✨"; fb.style.color = "#10b981"; }
-            else { fb.innerText = "Fout! ❌"; fb.style.color = "#ef4444"; }
-            idx++; setTimeout(load, 1500);
+       function answer(side) {
+    let fb = document.getElementById('feedback');
+    if(side === data[idx].c) { 
+        fb.innerText = "Correct! ✨ +10 pts"; 
+        fb.style.color = "#10b981"; 
+        
+        // PUNTEN DOORSTUREN NAAR LEADERBOARD
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
         }
+    }
+    else { 
+        fb.innerText = "Fout! ❌"; 
+        fb.style.color = "#ef4444"; 
+    }
+    idx++; setTimeout(load, 1500);
+}
         load();
     </script>
 </body>

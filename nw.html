@@ -1,69 +1,65 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Natuurwetenschappen Game - Volledige Examenstof</title>
+    <meta charset="UTF-8"><title>Wetenschappen Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #10b981; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
-        .box:hover { border-color: #10b981; background: #1c1c38; }
-        .badge { background: #10b981; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
+        .arcade { background: #141423; border: 3px solid #eab308; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; display: inline-block; width: 40%; color: white; font-weight: bold;}
+        .box:hover { border-color: #eab308; }
     </style>
 </head>
 <body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
-    <div class="arcade" style="margin-top: 25px;">
-        <h2>Examen Trainer Natuurwetenschappen 🧪</h2>
-        <p>Beantwoord de wetenschappelijke vraag (Thema 9, 10, 11 & 12):</p>
-        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
-        <h1 id="target" style="font-size: 1.2rem; font-weight: bold; margin: 15px 0; color: #10b981;"></h1>
-        <div class="grid" id="choices"></div>
-        <h3 id="feedback" style="margin-top: 20px;"></h3>
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <div class="arcade" style="margin-top: 25px;\">
+        <h2>Maatschappelijk Domein Sorter 📜</h2>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0; color: #eab308; font-weight: bold; min-height: 50px;"></p>
+        <div class="box" onclick="check('Politiek')">👑 Politiek</div>
+        <div class="box" onclick="check('Economisch')">🌾 Economisch</div>
+        <div class="box" onclick="check('Sociaal')">👥 Sociaal</div>
+        <div class="box" onclick="check('Cultureel')">🎨 Cultureel</div>
+        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
     </div>
-
     <script>
         const data = [
-            { t: "Thema 9: Voortplanting", q: "Wat is een belangrijk voordeel van ASEKSUELE (onmachtige) voortplanting?", a: "Er is geen partner nodig, waardoor nakomelingen snel geproduceerd kunnen worden.", f: ["Er ontstaat veel genetische variatie binnen de populatie.", "Nakomelingen zijn beter beschermd tegen nieuwe ziektes."] },
-            { t: "Thema 9: De Mens", q: "Wat gebeurt er globaal tijdens de menstruatiecyclus rond dag 14?", a: "De eisprong (ovulatie) vindt plaats.", f: ["De menstruatie (bloeding) begint.", "Het baarmoederslijmvlies wordt volledig afgebroken."] },
-            { t: "Thema 10: Fotosynthese", q: "Welke stoffen heeft een plant nodig VÓÓR de fotosynthese en wat produceert hij?", a: "Nodig: Water + Koolstofdioxide + Licht; Produceert: Glucose + Zuurstofgas", f: ["Nodig: Glucose + Zuurstofgas; Produceert: Water + Koolstofdioxide", "Nodig: Stikstof + Water; Produceert: Glucose + Koolstofdioxide"] },
-            { t: "Thema 11: Krachten", q: "Met welk meettoestel meet je de grootte van een kracht, en wat is de eenheid?", a: "Dynamometer / Newton (N)", f: ["Weegschaal / Kilogram (kg)", "Barometer / Pascal (Pa)"] },
-            { t: "Thema 11: Snelheid", q: "Een auto legt een afstand van 150 meter af in 6 seconden. Wat is de constante snelheid (v = Δx / Δt)?", a: "25 m/s", f: ["900 m/s", "15 m/s"] },
-            { t: "Thema 12: Materie", q: "Wat is het fundamentele verschil tussen massa en gewicht?", a: "Massa is de hoeveelheid materie (in kg); gewicht is de kracht waarmee een voorwerp op de aarde drukt (in N).", f: ["Massa verandert op de maan; gewicht blijft overal exact gelijk.", "Er is geen verschil; het zijn synoniemen."] },
-            { t: "Thema 12: Massadichtheid", q: "Bereken de massadichtheid (ρ = m / V) van een vloeistof met een massa van 200 gram en een volume van 250 cm³.", a: "0.8 g/cm³", f: ["1.25 g/cm³", "50 g/cm³"] }
+            { b: "Een oude Romeinse munt (Denari) gebruikt om graan te kopen.", d: "Economisch" },
+            { b: "Een wet uitgevaardigd door keizer Augustus.", d: "Politiek" },
+            { b: "Een wandschildering van de Romeinse god Jupiter.", d: "Cultureel" }
         ];
+        
         let cur;
+        let score = 0;
 
-        function load() {
+        function loadQuestion() {
             document.getElementById('feedback').innerText = "";
-            document.getElementById('choices').innerHTML = "";
             cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
-            document.getElementById('target').innerText = cur.q;
-
-            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            options.forEach(c => {
-                let d = document.createElement('button');
-                d.className = 'box';
-                d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { 
-                        fb.innerText = "Wetenschappelijk bewezen juist! ✨ +15 pts"; 
-                        fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
-                        setTimeout(load, 1500);
-                    } else { 
-                        fb.innerText = "Oeps! ❌ Dit klopt niet. Bekijk de samenvattingsblaadjes van 'Hoezo 2u'."; 
-                        fb.style.color = "#ef4444"; 
-                    }
-                };
-                document.getElementById('choices').appendChild(d);
-            });
+            document.getElementById('target').innerText = cur.b;
         }
-        load();
+
+        function check(choice) {
+            let fb = document.getElementById('feedback');
+            if (fb.innerText !== "") return; // Blokkeer extra klikken
+
+            if (choice === cur.d) {
+                score += 10;
+                fb.innerText = "Super! ✨ +10 pts";
+                fb.style.color = "#10b981";
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+            } else {
+                score -= 10; // Min 10 punten direct aftrekken
+                fb.innerText = `Helaas! Dit hoort bij ${cur.d}. ❌ Min 10 pts`;
+                fb.style.color = "#ef4444";
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(-10);
+                }
+            }
+            // Meteen door naar de volgende vraag
+            setTimeout(loadQuestion, 1500);
+        }
+
+        window.onload = loadQuestion;
     </script>
-    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

@@ -26,15 +26,26 @@
             { b: "Een wet uitgevaardigd door keizer Augustus.", d: "Politiek" },
             { b: "Een wandschildering van de Romeinse god Jupiter.", d: "Cultureel" }
         ];
-        let cur;
-        function load() { document.getElementById('feedback').innerText = ""; cur = data[Math.floor(Math.random() * data.length)]; document.getElementById('target').innerText = cur.b; }
-        function check(choice) {
-            let fb = document.getElementById('feedback');
-            if(choice === cur.d) { fb.innerText = "Historisch correct! 👑"; fb.style.color = "#10b981"; }
-            else { fb.innerText = "Verkeerd domein! ❌"; fb.style.color = "#ef4444"; }
-            setTimeout(load, 1500);
+       d.onclick = () => {
+    let fb = document.getElementById('feedback');
+    if(c === cur.a) { 
+        fb.innerText = "Super! ✨ +10 pts"; 
+        fb.style.color = "#10b981"; 
+        
+        // PUNTEN DOORSTUREN NAAR LEADERBOARD
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
+        }
+    }
+    else { 
+        fb.innerText = "Fout! ❌"; 
+        fb.style.color = "#ef4444"; 
+    }
+    setTimeout(load, 1500);
+};
         }
         load();
     </script>
 </body>
 </html>
+<script type="module" src="firebase-config.js"></script>

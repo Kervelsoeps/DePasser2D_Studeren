@@ -27,7 +27,55 @@
             min-height: 100vh;
         }
 
-        header { text-align: center; padding: 60px 20px; }
+        /* LOGIN SCREEN STYLING */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .google-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 25px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+            background: var(--neon-cyan);
+            color: #fff;
+        }
+
+        /* DASHBOARD CONTENT (Verborgen tot login) */
+        #dashboard-content { display: none; }
+
+        header { text-align: center; padding: 60px 20px; position: relative; }
         header h1 {
             font-size: 3.5rem;
             font-weight: 800;
@@ -40,6 +88,30 @@
             margin-bottom: 10px;
         }
         header p { color: var(--text-muted); font-size: 1.2rem; }
+
+        .user-nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .logout-btn:hover { background: var(--neon-red); color: #fff; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
@@ -90,48 +162,70 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>⚡ Study Game Hub ⚡</h1>
-        <p>Klik op een arcadekast om de game van dat vak te openen!</p>
-    </header>
-    <div class="container">
-        <div class="dashboard">
-            <a href="engels.html" class="game-card engels">
-                <h3>🇬🇧 Engels</h3>
-                <p>Grammar Runner & Letters</p>
-                <span class="badge">Unit 3-7</span>
-            </a>
-            <a href="frans.html" class="game-card frans">
-                <h3>🇫🇷 Frans</h3>
-                <p>Vocab Catcher & Météo</p>
-                <span class="badge">Juni Examen</span>
-            </a>
-            <a href="aardrijkskunde.html" class="game-card aardrijkskunde">
-                <h3>🌍 Aardrijkskunde</h3>
-                <p>The 3 P's Sorter</p>
-                <span class="badge">Duurzaamheid</span>
-            </a>
-            <a href="wiskunde.html" class="game-card wiskunde">
-                <h3>📐 Wiskunde</h3>
-                <p>Volume Formule Kraker</p>
-                <span class="badge">Ruimtefiguren</span>
-            </a>
-            <a href="nw.html" class="game-card nw">
-                <h3>🧪 Wetenschappen</h3>
-                <p>Massa & Dichtheid Klikker</p>
-                <span class="badge">Thema 9-12</span>
-            </a>
-            <a href="geschiedenis.html" class="game-card geschiedenis">
-                <h3>📜 Geschiedenis</h3>
-                <p>Maatschappelijk Domein Sorter</p>
-                <span class="badge">De Romeinen</span>
-            </a>
-            <a href="nederlands.html" class="game-card nederlands">
-                <h3>🇳🇱 Nederlands</h3>
-                <p>Verbanden & Grammatica Puzzel</p>
-                <span class="badge">Campus 2</span>
-            </a>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h1 style="color: var(--neon-cyan); margin-bottom: 10px; font-size: 2rem;">ARCADE ACCESS</h1>
+            <p style="color: var(--text-muted);">Log in met je school Google-account om toegang te krijgen tot de Study Game Hub.</p>
+            
+            <button class="google-btn" onclick="loginWithGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_\"G\"_Logo.svg\" alt="Google" style="width:20px; height:20px;">
+                Inloggen met Google
+            </button>
         </div>
     </div>
+
+    <div id="dashboard-content">
+        <header>
+            <div class="user-nav">
+                <span id="user-display" style="font-weight: bold; color: var(--neon-green);"></span>
+                <button class="logout-btn" onclick="logout()">Uitloggen</button>
+            </div>
+            <h1>⚡ Study Game Hub ⚡</h1>
+            <p>Kies een arcadekast en begin direct met oefenen!</p>
+        </header>
+        
+        <div class="container">
+            <div class="dashboard">
+                <a href="engels.html" class="game-card engels">
+                    <h3>🇬🇧 Engels</h3>
+                    <p>Grammar Runner & Letters</p>
+                    <span class="badge">Unit 3-7</span>
+                </a>
+                <a href="frans.html" class="game-card frans">
+                    <h3>🇫🇷 Frans</h3>
+                    <p>Vocab Catcher & Météo</p>
+                    <span class="badge">Juni Examen</span>
+                </a>
+                <a href="aardrijkskunde.html" class="game-card aardrijkskunde">
+                    <h3>🌍 Aardrijkskunde</h3>
+                    <p>The 3 P's Sorter</p>
+                    <span class="badge">Duurzaamheid</span>
+                </a>
+                <a href="wiskunde.html" class="game-card wiskunde">
+                    <h3>📐 Wiskunde</h3>
+                    <p>Volume Formule Kraker</p>
+                    <span class="badge">Ruimtefiguren</span>
+                </a>
+                <a href="nw.html" class="game-card nw">
+                    <h3>🧪 Wetenschappen</h3>
+                    <p>Massa & Dichtheid Klikker</p>
+                    <span class="badge">Thema 9-12</span>
+                </a>
+                <a href="geschiedenis.html" class="game-card geschiedenis">
+                    <h3>📜 Geschiedenis</h3>
+                    <p>Maatschappelijk Domein Sorter</p>
+                    <span class="badge">De Romeinen</span>
+                </a>
+                <a href="nederlands.html" class="game-card nederlands">
+                    <h3>🇳🇱 Nederlands</h3>
+                    <p>Verbanden & Grammatica Puzzel</p>
+                    <span class="badge">Campus 2</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

@@ -25,19 +25,23 @@
             { nl: "De lichaamsdelen", fr: "Les parties du corps", f: ["Le plan", "Être malade"] },
             { nl: "Ziek zijn", fr: "Être malade", f: ["Les premiers secours", "La météo"] }
         ];
-        function load() {
-            document.getElementById('feedback').innerText = "";
-            let cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('target').innerText = cur.nl;
-            let choices = [cur.fr, ...cur.f].sort(() => Math.random() - 0.5);
-            let container = document.getElementById('choices'); container.innerHTML = "";
-            choices.forEach(c => {
-                let d = document.createElement('div'); d.className = "box"; d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.fr) { fb.innerText = "Très bien! 🌟"; fb.style.color = "#10b981"; }
-                    else { fb.innerText = "Fout! ❌"; fb.style.color = "#ef4444"; }
-                    setTimeout(load, 1500);
+       d.onclick = () => {
+    let fb = document.getElementById('feedback');
+    if(c === cur.fr) { 
+        fb.innerText = "Très bien! 🌟 +10 pts"; 
+        fb.style.color = "#10b981"; 
+        
+        // PUNTEN DOORSTUREN NAAR LEADERBOARD
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
+        }
+    }
+    else { 
+        fb.innerText = "Fout! ❌"; 
+        fb.style.color = "#ef4444"; 
+    }
+    setTimeout(load, 1500);
+};
                 };
                 container.appendChild(d);
             });
@@ -46,3 +50,4 @@
     </script>
 </body>
 </html>
+<script type="module" src="firebase-config.js"></script>

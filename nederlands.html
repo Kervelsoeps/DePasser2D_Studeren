@@ -22,20 +22,23 @@
             { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "Het voorbijrijdende verkeer"] },
             { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan."] }
         ];
-        let cur;
-        function load() {
-            document.getElementById('feedback').innerText = "";
-            cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('target').innerText = cur.q;
-            let choices = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            let container = document.getElementById('choices'); container.innerHTML = "";
-            choices.forEach(c => {
-                let d = document.createElement('div'); d.className = "box"; d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { fb.innerText = "Taalmeester! ✨"; fb.style.color = "#10b981"; }
-                    else { fb.innerText = "Probeer opnieuw! ❌"; fb.style.color = "#ef4444"; }
-                    setTimeout(load, 1500);
+       d.onclick = () => {
+    let fb = document.getElementById('feedback');
+    if(c === cur.a) { 
+        fb.innerText = "Taalmeester! ✨ +10 pts"; 
+        fb.style.color = "#10b981"; 
+        
+        // PUNTEN DOORSTUREN NAAR LEADERBOARD
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
+        }
+    }
+    else { 
+        fb.innerText = "Probeer opnieuw! ❌"; 
+        fb.style.color = "#ef4444"; 
+    }
+    setTimeout(load, 1500);
+};
                 };
                 container.appendChild(d);
             });
@@ -44,3 +47,4 @@
     </script>
 </body>
 </html>
+<script type="module" src="firebase-config.js"></script>

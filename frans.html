@@ -40,7 +40,6 @@
             
             let choicesContainer = document.getElementById('choices');
             choicesContainer.innerHTML = "";
-            
             let allChoices = [cur.fr, ...cur.f].sort(() => Math.random() - 0.5);
             
             allChoices.forEach(choice => {
@@ -59,14 +58,14 @@
                 fb.style.color = "#10b981"; 
                 localScore += 10;
                 document.getElementById('score').innerText = localScore;
-                
-                if(window.saveScoreToCloud) {
-                    window.saveScoreToCloud(10);
-                }
+                if(window.saveScoreToCloud) window.saveScoreToCloud(10);
                 setTimeout(loadQuestion, 2000);
             } else {
-                fb.innerText = `Oeps! Het moest zijn: ${cur.fr} ❌`; 
+                fb.innerText = `Oeps! ${cur.fr} ❌ -10 pts`; 
                 fb.style.color = "#ef4444";
+                localScore = Math.max(0, localScore - 10);
+                document.getElementById('score').innerText = localScore;
+                if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
                 setTimeout(loadQuestion, 3000);
             }
         }

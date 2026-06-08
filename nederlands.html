@@ -2,31 +2,48 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Nederlands Game - Expert Edition</title>
+    <title>Nederlands Game - Examen Juni 2026</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 650px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 18px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
+        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 700px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
         .box:hover { border-color: #3b82f6; background: #1c1c38; }
+        .badge { background: #3b82f6; color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; vertical-align: middle; margin-left: 10px; }
     </style>
 </head>
 <body>
     <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
-        <h2>Taal & Grammatica Masterclass 🇳🇱</h2>
-        <p>Analyseer de stelling en kies het juiste taalkundige antwoord:</p>
-        <h1 id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0; color: #3b82f6;"></h1>
+        <h2>Examen Trainer Nederlands 🇳🇱</h2>
+        <p>Analyseer de taalkundige kwestie gebaseerd op Campus 2:</p>
+        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
+        <h1 id="target" style="font-size: 1.25rem; font-weight: bold; margin: 15px 0; color: #3b82f6;"></h1>
         <div class="grid" id="choices"></div>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
 
     <script>
         const data = [
-            { q: "Welk woord is hier volledig correct gespeld (Les 28 - Woordtekens)?", a: "zee-eend en drieëndertig", f: ["zeeëend en drie-en-dertig", "zeeeend en drieëndertig"] },
-            { q: "Wat is de structuur van deze zin: 'Hoewel hij hard studeerde voor Frans, vond hij het examen erg complex.'", a: "Een samengestelde zin met een bijzin (ingeleid door een voegwoord) en een hoofdzin.", f: ["Een enkelvoudige zin met meerdere persoonsvormen.", "Een samengestelde zin die volledig bestaat uit twee nevengeschikte hoofdzinnen."] },
-            { q: "Zet deze passieve zin correct om naar een ACTIEVE zin: 'De historische bronnen werden door de leerlingen grondig geanalyseerd.'", a: "De leerlingen analyseerden de historische bronnen grondig.", f: ["De leerlingen hebben de historische bronnen grondig geanalyseerd.", "De historische bronnen analyseerden de leerlingen grondig."] },
-            { q: "Wat is de grammaticale functie van het onderstreepte zinsdeel: 'De leerkracht gaf *aan de ijverige leerling* een hogere score.'", a: "Meewerkend voorwerp", f: ["Lijdend voorwerp", "Voorzetselvoorwerp"] }
+            // Les 28 & 37: Koppelteken en trema / Woordtekens
+            { t: "Les 28/37: Woordtekens", q: "Welke zin bevat de volledig correcte spelling?", a: "De auto-industrie maakte een reuzensprong dankzij de nieuwe twee-en-twintigjarige ingenieur.", f: ["De autoindustrie maakte een reuzensprong dankzij de nieuwe tweeëntwintigjarige ingenieur.", "De auto-industrie maakte een reuzensprong dankzij de nieuwe tweeëntwintig-jarige ingenieur."] },
+            { t: "Les 28: Trema", q: "Wat is de juiste spelling van het meervoud van 'kopie' en het woord 'ruïne'?", a: "kopieën en ruïne", f: ["kopieen en ruine", "kopie-en en ruïnes"] },
+            
+            // Les 22: Actieve en passieve zinnen
+            { t: "Les 22: Actief en Passief", q: "Zet om naar een passieve zin: 'De directie zal morgen de examenresultaten bekendmaken.'", a: "De examenresultaten zullen morgen door de directie bekendgemaakt worden.", f: ["De examenresultaten worden morgen door de directie bekendgemaakt.", "De directie laat morgen de examenresultaten bekendmaken."] },
+            
+            // Les 21: Oorzaak en gevolg
+            { t: "Les 21: Verbanden", q: "Wat is het GEVOLG in deze zin: 'Doordat de hoofdlaborant een cruciale rekenfout maakte, mislukte het hele wetenschappelijke experiment.'", a: "Het mislukken van het hele wetenschappelijke experiment.", f: ["Het maken van een cruciale rekenfout door de hoofdlaborant.", "Het feit dat het om een wetenschappelijk experiment ging."] },
+            
+            // Les 35: Enkelvoudige en samengestelde zinnen
+            { t: "Les 35: Zinsstructuur", q: "Welke bewering klopt over de zin: 'Toen de bel ging, stormden de leerlingen naar buiten, maar de leraar bleef rustig zitten.'", a: "Het is een samengestelde zin met twee hoofdzinnen en één bijzin.", f: ["Het is een samengestelde zin die enkel uit nevengeschikte hoofdzinnen bestaat.", "Het is een enkelvoudige zin met meerdere bepalingen."] },
+            
+            // Les 32: Voornaamwoorden
+            { t: "Les 32: Voornaamwoorden", q: "In de zin: 'Wie heeft hen dat boek over grafologie gegeven?', wat voor soort voornaamwoorden zijn 'Wie' en 'hen'?", a: "Wie = vragend voornaamwoord, hen = persoonlijk voornaamwoord", f: ["Wie = betrekkelijk voornaamwoord, hen = bezittelijk voornaamwoord", "Wie = vragend voornaamwoord, hen = aanwijzend voornaamwoord"] },
+            
+            // Les 45: Woorden in een zin (Zinsdelen)
+            { t: "Les 45: Zinsdelen", q: "Wat is de grammaticale functie van 'de winnaar' in de zin: 'De jury overhandigde de gouden medaille aan de winnaar.'?", a: "Meewerkend voorwerp", f: ["Lijdend voorwerp", "Voorzetselvoorwerp"] },
+            { t: "Les 45: Zinsdelen", q: "Zoek het VOORZETSELVOORWERP in de zin: 'Zij twijfelde al weken aan de juistheid van die historische bron.'", a: "aan de juistheid van die historische bron", f: ["al weken", "Zij"] }
         ];
         let cur;
 
@@ -34,6 +51,7 @@
             document.getElementById('feedback').innerText = "";
             document.getElementById('choices').innerHTML = "";
             cur = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
             document.getElementById('target').innerText = cur.q;
 
             let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
@@ -44,12 +62,12 @@
                 d.onclick = () => {
                     let fb = document.getElementById('feedback');
                     if(c === cur.a) { 
-                        fb.innerText = "Indrukwekkend! Perfect geanalyseerd. 👑 +15 pts"; 
+                        fb.innerText = "Feilloos! Jij bent helemaal klaar voor het examen Nederlands. 👑 +15 pts"; 
                         fb.style.color = "#10b981"; 
                         if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
                         setTimeout(load, 1800);
                     } else { 
-                        fb.innerText = "Helaas! ❌ Dat klopt grammaticaal niet. Kijk goed naar de zinsconstructie."; 
+                        fb.innerText = "Oeps! ❌ Dit zinsdeel of deze spellingregel klopt niet. Kijk het na in Campus 2."; 
                         fb.style.color = "#ef4444"; 
                     }
                 };

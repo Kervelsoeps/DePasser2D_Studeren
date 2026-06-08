@@ -25,73 +25,56 @@
             min-height: 100vh;
         }
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .login-box { background: var(--card-bg); border: 2px solid var(--primary); padding: 40px; border-radius: 24px; text-align: center; box-shadow: 0 0 30px rgba(124, 58, 237, 0.25); max-width: 450px; }
-        .google-btn { background: #fff; color: #000; border: none; padding: 14px 24px; font-size: 1.1rem; font-weight: bold; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; margin-top: 25px; }
-        #dashboard-content { display: none; }
-        header { text-align: center; padding: 40px 20px; position: relative; }
-        header h1 { font-size: 3.2rem; font-weight: 800; text-transform: uppercase; background: linear-gradient(to right, var(--neon-cyan), #a855f7, var(--neon-yellow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .user-nav { position: absolute; top: 20px; right: 20px; display: flex; gap: 15px; background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 12px; }
-        .logout-btn { background: rgba(239, 68, 68, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); padding: 4px 10px; border-radius: 8px; cursor: pointer; }
-        
-        /* HOOFD LAYOUT MET LEADERBOARD */
-        .main-layout { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
-        .game-grid { flex: 3; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; min-widh: 300px; }
-        
-        .leaderboard-sidebar { 
-            flex: 1; 
-            min-width: 280px; 
-            background: var(--card-bg); 
-            border: 2px solid var(--primary); 
-            border-radius: 20px; 
-            padding: 20px; 
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
-        }
-        .leaderboard-sidebar h2 { color: var(--neon-cyan); margin-bottom: 15px; font-size: 1.5rem; text-transform: uppercase; text-align: center; }
-        .leaderboard-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #252542; font-size: 1.05rem; }
-
-        .game-card { background: var(--card-bg); border: 2px solid #252542; border-radius: 20px; padding: 25px 15px; text-align: center; text-decoration: none; color: var(--text-main); transition: all 0.3s; }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--color-focus); box-shadow: 0 8px 25px var(--glow-focus); }
-        .engels { --color-focus: var(--neon-red); --glow-focus: rgba(239, 68, 68, 0.3); }
-        .frans { --color-focus: var(--neon-cyan); --glow-focus: rgba(6, 182, 212, 0.3); }
-        .aardrijkskunde { --color-focus: var(--neon-green); --glow-focus: rgba(16, 185, 129, 0.3); }
-        .wiskunde { --color-focus: var(--neon-yellow); --glow-focus: rgba(245, 158, 11, 0.3); }
-        .nw { --color-focus: #ec4899; --glow-focus: rgba(236, 72, 153, 0.3); }
-        .geschiedenis { --color-focus: #eab308; --glow-focus: rgba(234, 179, 8, 0.3); }
-        .nederlands { --color-focus: #3b82f6; --glow-focus: rgba(59, 130, 246, 0.3); }
-        .badge { background: rgba(255, 255, 255, 0.06); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .btn-login { background: var(--primary); color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #2a2a4a; }
+        .logout-btn { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 30px; }
+        .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .game-card { background: var(--card-bg); padding: 20px; border-radius: 15px; text-decoration: none; color: white; border: 2px solid #2a2a4a; transition: 0.2s; position: relative; }
+        .game-card:hover { transform: translateY(-3px); }
+        .game-card.engels:hover { border-color: var(--neon-red); }
+        .game-card.frans:hover { border-color: var(--neon-cyan); }
+        .game-card.aardrijkskunde:hover { border-color: var(--neon-green); }
+        .game-card.wiskunde:hover { border-color: var(--neon-yellow); }
+        .game-card.nw:hover { border-color: #a78bfa; }
+        .game-card.geschiedenis:hover { border-color: #f59e0b; }
+        .game-card.nederlands:hover { border-color: #3b82f6; }
+        .badge { position: absolute; top: 15px; right: 15px; background: #2a2a4a; font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; color: var(--text-muted); }
+        .leaderboard-sidebar { background: var(--card-bg); border: 2px solid var(--primary); padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(124, 58, 237, 0.1); }
+        .leaderboard-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2a2a4a; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="login-box">
-            <h1>ARCADE ACCESS</h1>
-            <p>Log in met Google om mee te doen aan de klassenstrijd!</p>
-            <button class="google-btn" onclick="loginWithGoogle()">Inloggen met Google</button>
-        </div>
+        <h1 style="margin-bottom: 20px; font-size: 2.5rem;">⚡ De Passer 2D Studietool ⚡</h1>
+        <button class="btn-login" onclick="window.loginWithGoogle()">Inloggen met Google</button>
     </div>
 
-    <div id="dashboard-content">
-        <header>
-            <div class="user-nav"><span id="user-display"></span><button class="logout-btn" onclick="logout()">Uitloggen</button></div>
-            <h1>⚡ Study Game Hub 2026 ⚡</h1>
-            <p>Verdien punten in de games en stijg op het klassement!</p>
-        </header>
-        
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div id="dashboard-content" style="display:none;">
+        <div class="container">
+            <header>
+                <div>
+                    <h1 style="font-size: 1.8rem;">Examens Juni 2026 📚</h1>
+                    <p id="user-display" style="color: var(--neon-cyan); font-weight: bold; margin-top: 5px;"></p>
+                </div>
+                <button class="logout-btn" onclick="window.logout()">Uitloggen</button>
+            </header>
+
             <div class="main-layout">
-                <div class="game-grid">
+                <div class="games-grid">
                     <a href="engels.html" class="game-card engels"><h3>🇬🇧 Engels</h3><p>Grammar Runner</p><span class="badge">Units 3-7</span></a>
                     <a href="frans.html" class="game-card frans"><h3>🇫🇷 Frans</h3><p>Vocab Klikker</p><span class="badge">Examen Juni</span></a>
                     <a href="aardrijkskunde.html" class="game-card aardrijkskunde"><h3>🌍 Aardrijkskunde</h3><p>The 3 P's Sorter</p><span class="badge">Duurzaamheid</span></a>
-                    <a href="wiskunde.html" class="game-card wiskunde"><h3>📐 Wiskunde</h3><p>Ruimtefiguren</p><span class="badge">Volume</span></a>
-                    <a href="nw.html" class="game-card nw"><h3>🧪 Wetenschappen</h3><p>Massadichtheid</p><span class="badge">Thema 9-12</span></a>
+                    <a href="wiskunde.html" class="game-card wiskunde"><h3>📐 Wiskunde</h3><p>Kluiskraker (Volume)</p><span class="badge">Ruimtefiguren</span></a>
+                    <a href="nw.html" class="game-card nw"><h3>🧪 Wetenschappen</h3><p>Formules & Theorie</p><span class="badge">Thema 9-12</span></a>
                     <a href="geschiedenis.html" class="game-card geschiedenis"><h3>📜 Geschiedenis</h3><p>Domeinen Sorter</p><span class="badge">De Romeinen</span></a>
                     <a href="nederlands.html" class="game-card nederlands"><h3>🇳🇱 Nederlands</h3><p>Taal & Verbanden</p><span class="badge">Campus 2</span></a>
                 </div>
 
                 <div class="leaderboard-sidebar">
-                    <h2>🏆 Top van de Klas</h2>
+                    <h2 style="color: var(--primary); margin-bottom: 15px;">🏆 Top van de Klas</h2>
                     <div id="leaderboard-list">
                         <p style="text-align:center; color:var(--text-muted);">Scores laden...</p>
                     </div>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8"><title>Frans Game</title>
+    <style>
+        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+        .arcade { background: #141423; border: 3px solid #06b6d4; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; }
+        .box:hover { border-color: #06b6d4; }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <div class="arcade" style="margin-top: 25px;">
+        <h2>Vocab Klikker 🌦</h2>
+        <p>Vertaal naar het Frans:</p>
+        <h1 id="target" style="color: #06b6d4; margin: 20px 0;"></h1>
+        <div class="grid" id="choices"></div>
+        <h3 id="feedback" style="margin-top: 25px;"></h3>
+    </div>
+    <script>
+        const data = [
+            { nl: "Het weer", fr: "La météo", f: ["Le corps", "La ville"] },
+            { nl: "De lichaamsdelen", fr: "Les parties du corps", f: ["Le plan", "Être malade"] },
+            { nl: "Ziek zijn", fr: "Être malade", f: ["Les premiers secours", "La météo"] }
+        ];
+        function load() {
+            document.getElementById('feedback').innerText = "";
+            let cur = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('target').innerText = cur.nl;
+            let choices = [cur.fr, ...cur.f].sort(() => Math.random() - 0.5);
+            let container = document.getElementById('choices'); container.innerHTML = "";
+            choices.forEach(c => {
+                let d = document.createElement('div'); d.className = "box"; d.innerText = c;
+                d.onclick = () => {
+                    let fb = document.getElementById('feedback');
+                    if(c === cur.fr) { fb.innerText = "Très bien! 🌟"; fb.style.color = "#10b981"; }
+                    else { fb.innerText = "Fout! ❌"; fb.style.color = "#ef4444"; }
+                    setTimeout(load, 1500);
+                };
+                container.appendChild(d);
+            });
+        }
+        load();
+    </script>
+</body>
+</html>

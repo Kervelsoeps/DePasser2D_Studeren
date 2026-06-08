@@ -2,67 +2,112 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Geschiedenis Game - Volledige Examenstof</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geschiedenis Arcade Game</title>
     <style>
-        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #eab308; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
-        .box:hover { border-color: #eab308; background: #1c1c38; }
-        .badge { background: #eab308; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
+        :root {
+            --bg-dark: #0a0a12;
+            --card-bg: #141423;
+            --neon-yellow: #eab308;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body { 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            text-align: center; 
+            padding: 40px; 
+            background-image: radial-gradient(circle at 50% 10%, #2e2509 0%, var(--bg-dark) 70%);
+            min-height: 100vh;
+        }
+
+        .back-btn { 
+            display: inline-block; \
+            margin-bottom: 25px; 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-weight: bold;
+            border: 1px solid #3b3b68;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        .back-btn:hover { border-color: var(--neon-yellow); color: #fff; }
+
+        .arcade { background: var(--card-bg); border: 3px solid var(--neon-yellow); border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; display: inline-block; width: 42%; color: #fff; font-weight: bold; transition: 0.2s; }
+        .box:hover { border-color: var(--neon-yellow); background: #1a1a3a; }
+        
+        .score-container { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-muted); }
+        #score { color: var(--neon-yellow); font-weight: bold; }
     </style>
 </head>
 <body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
-    <div class="arcade" style="margin-top: 25px;">
-        <h2>Geschiedenis Sorter & Quiz 📜</h2>
-        <p>Analyseer de historische bron of historische context over Thema 4 (De Romeinen):</p>
-        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
-        <h1 id="target" style="font-size: 1.2-rem; font-weight: bold; margin: 15px 0; color: #eab308;"></h1>
-        <div class="grid" id="choices"></div>
-        <h3 id="feedback" style="margin-top: 20px;"></h3>
+    <a href="index.html" class="back-btn">⬅ Dashboard</a>
+    <div class="arcade">
+        <h2>Maatschappelijk Domein Sorter 📜</h2>
+        <div class="score-container">Huidige sessie score: <span id="score">0</span> pts</div>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0; color: #eab308; font-weight: bold; min-height: 60px;"></p>
+        
+        <div class="box" onclick="check('Politiek')">👑 Politiek</div>
+        <div class="box" onclick="check('Economisch')">🌾 Economisch</div>
+        <div class="box" onclick="check('Sociaal')">👥 Sociaal</div>
+        <div class="box" onclick="check('Cultureel')">🎨 Cultureel</div>
+        
+        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
     </div>
 
     <script>
-        const data = [
-            { t: "Kritiek van de bron", q: "Wat is een PRIMAIRE historische bron?", a: "Een bron die rechtstreeks afkomstig is uit de tijd waarover men informatie zoekt.", f: ["Een modern geschiedenisboek dat de feiten achteraf reconstrueert.", "Een nagespeelde documentaire op televisie."] },
-            { t: "Maatschappelijke domeinen", q: "Onder welk maatschappelijk domein valt het feit dat slaven moesten zwoegen op de landerijen van rijke patriciërs?", a: "Sociaal", f: ["Politiek", "Cultureel"] },
-            { t: "Maatschappelijke domeinen", q: "Tot welk domein hoort het muntsysteem (denarii) en de handel op het Forum Romanum?", a: "Economisch", f: ["Politiek", "Sociaal"] },
-            { t: "Thema 4: De Romeinen bij ons", q: "Hoe is de huidige taalgrens in België historisch ontstaan volgens de cursus?", a: "Door de vestiging van de Germaanse Franken ten noorden van de Romeinse heirbanen (limes) na de val van de grensverdediging.", f: ["Julius Caesar heeft die grens persoonlijk getrokken via een decreet.", "Door een natuurlijke splitsing van rivieren in de middeleeuwen."] },
-            { t: "Tijdsbegrip", q: "Als een cultuuruiting eeuwenlang onveranderd blijft bestaan, spreken historici van...", a: "Continuïteit", f: ["Evolutie", "Verandering"] },
-            { t: "Historische onderzoeksvraag", q: "Aan welke 3 criteria moet een goede historische onderzoeksvraag voldoen?", a: "Duidelijk/afgebakend, relevant en controleerbaar (onderzoekbaar).", f: ["Lang, complex en grappig.", "Geschreven, materieel en visueel."] }
-        ];
         let cur;
+        let score = 0;
 
-        function load() {
+        const data = [
+            { b: "Romeinse handelaren die amforen met olijfolie verkopen op het forum.", d: "Economisch" },
+            { b: "De verovering van Gallië door het machtige leger van Julius Caesar.", d: "Politiek" },
+            { b: "Slaven die moeten zwoegen op de landerijen van een rijke Romeinse grootgrondbezitter.", d: "Sociaal" },
+            { b: "Het ontstaan van de Latijnse taal en de taalgrens in België.", d: "Cultureel" }
+        ];
+
+        function loadQuestion() {
             document.getElementById('feedback').innerText = "";
-            document.getElementById('choices').innerHTML = "";
             cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
-            document.getElementById('target').innerText = cur.q;
-
-            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            options.forEach(c => {
-                let d = document.createElement('button');
-                d.className = 'box';
-                d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { 
-                        fb.innerText = "Historisch correct! 👑 +15 pts"; 
-                        fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
-                        setTimeout(load, 1500);
-                    } else { 
-                        fb.innerText = "Oeps! Dat klopt helaas niet. Kijk de woordenlijst achteraan in je boek na."; 
-                        fb.style.color = "#ef4444"; 
-                    }
-                };
-                document.getElementById('choices').appendChild(d);
-            });
+            document.getElementById('target').innerText = cur.b;
         }
-        load();
+
+        function check(choice) {
+            let fb = document.getElementById('feedback');
+            
+            // Blokkeer extra klikken tijdens het tonen van feedback
+            if (fb.innerText !== "") return;
+
+            if (choice === cur.d) {
+                score += 10;
+                if(document.getElementById('score')) document.getElementById('score').innerText = score;
+                fb.innerText = "Historisch correct! 👑 +10 punten";
+                fb.style.color = "var(--neon-green)";
+
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+            } else {
+                score -= 10; // Trek direct 10 punten af
+                if(document.getElementById('score')) document.getElementById('score').innerText = score;
+                fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌ Min 10 punten!`;
+                fb.style.color = "var(--neon-red)";
+
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(-10);
+                }
+            }
+            // Direct door naar de volgende vraag na 1,5 seconde, geen herkansing!
+            setTimeout(loadQuestion, 1500);
+        }
+
+        window.onload = loadQuestion;
     </script>
-    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

@@ -1,76 +1,75 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Frans Game - Volledige Examenstof</title>
+    <meta charset="UTF-8"><title>Frans Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #06b6d4; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
-        .box:hover { border-color: #06b6d4; background: #1c1c38; }
-        .badge { background: #06b6d4; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
+        .arcade { background: #141423; border: 3px solid #06b6d4; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; color: white; font-weight: bold; }
+        .box:hover { border-color: #06b6d4; background: #1a1a3a; }
     </style>
 </head>
-<body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
+<body onload="loadQuestion()">
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
-        <h2>Examen Trainer Frans 🇫🇷</h2>
-        <p>Beantwoord de vraag op basis van Modules 4, 5, 6 & 7 + Boussole:</p>
-        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
-        <h1 id="target" style="color: #06b6d4; margin: 15px 0; font-size: 1.25rem;"></h1>
+        <h2>Vocab Klikker 🌦</h2>
+        <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
+        <p>Vertaal naar het Frans:</p>
+        <h1 id="target" style="color: #06b6d4; margin: 20px 0;"></h1>
         <div class="grid" id="choices"></div>
         <h3 id="feedback" style="margin-top: 25px;"></h3>
     </div>
-    
+
+    <script type="module" src="firebase-config.js"></script>
     <script>
         const data = [
-            { t: "Vocabulaire: Être malade", q: "Vertaal: 'Ik ben verkouden en ik heb keelpijn.'", a: "Je suis enrhumé et j'ai mal à la gorge.", f: ["Je suis blessé et j'ai mal au cœur.", "J'ai de la fièvre et j'ai mal au dos."] },
-            { t: "Vocabulaire: Les premiers secours", q: "Wat betekent de instructie 'appeler les secours'?", a: "de hulpdiensten bellen", f: ["een pleister kleven", "het slachtoffer reanimeren"] },
-            { t: "Vocabulaire: Les parties du corps", q: "Welk lichaamsdeel is 'la cheville'?", a: "de enkel", f: ["de pols", "de knie"] },
-            { t: "Vocabulaire: Les parties du corps", q: "Vertaal 'de pols' naar het Frans.", a: "le poignet", f: ["le pompiers", "le genou"] },
-            { t: "Vocabulaire: Le plan de ville", q: "Hoe zeg je: 'Sla de eerste straat links af bij het stoplicht'?", a: "Prenez la première rue à gauche au feu de signalisation.", f: ["Tournez à droite après le rond-point.", "Continuez tout droit jusqu'au carrefour."] },
-            { t: "Vocabulaire: Les magasins et bâtiments", q: "Vertaal: 'het gemeentehuis' en 'de apotheek'", a: "la mairie et la pharmacie", f: ["la gare et la bibliothèque", "l'église et la boucherie"] },
-            { t: "Vocabulaire: La météo", q: "Hoe zeg je: 'Het bliksemt en het stormt'?", a: "Il y a des éclairs et il y a une tempête.", f: ["Il fait du brouillard et il gèle.", "Il y a des nuages et il pleut."] },
-            { t: "Vocabulaire: La météo & les saisons", q: "Vertaal: 'In de herfst mist het vaak.'", a: "En automne, il y a souvent du brouillard.", f: ["En hiver, il fait souvent froid.", "Au printemps, il y a du vent."] },
-            { t: "Grammaire: L'imparfait vs Passé Composé", q: "Kies de juiste tijden: 'Hier, je (regarder) ____ la télé quand soudain le téléphone (sonner) ____.'", a: "regardais / a sonné", f: ["ai regardé / sonnait", "regardais / sonnait"] },
-            { t: "Grammaire: L'impératif (Bevelsvorm)", q: "Wat is de juiste bevelsvorm van 'faire' voor 'vous'?", a: "Faites !", f: ["Faisons !", "Faites-vous !"] },
-            { t: "Grammaire: L'impératif (Bevelsvorm)", q: "Wat is de bevelsvorm van 'prendre' voor 'tu'?", a: "Prends !", f: ["Prend !", "Prenez !"] },
-            { t: "Grammaire: L'indicatif présent", q: "Wat is de juiste vorm van het werkwoord 'choisir' bij 'nous'?", a: "nous choisissons", f: ["nous choisisez", "nous choisissons"] },
-            { t: "Grammaire: L'indicatif présent", q: "Wat is de tegenwoordige tijd van 'prendre' bij 'ils'?", a: "ils prennent", f: ["ils prendent", "ils prennet"] },
-            { t: "Grammaire: Le passé composé", q: "Welke zin gebruikt het hulpwerkwoord 'être' grammaticaal correct?", a: "Elle est allée à la gare.", f: ["Elle a allé à la gare.", "Elle est allé à la gare."] }
+            { nl: "Het weer", fr: "La météo", f: ["Le corps", "La ville"] },
+            { nl: "De lichaamsdelen", fr: "Les parties du corps", f: ["Le plan", "Être malade"] },
+            { nl: "Ziek zijn", fr: "Être malade", f: ["Les premiers secours", "La météo"] },
+            { nl: "De stadskaart", fr: "Le plan de ville", f: ["Les magasins", "La météo"] }
         ];
+        
         let cur;
+        let localScore = 0;
 
-        function load() {
+        function loadQuestion() {
             document.getElementById('feedback').innerText = "";
-            document.getElementById('choices').innerHTML = "";
             cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
-            document.getElementById('target').innerText = cur.q;
-
-            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            options.forEach(c => {
-                let d = document.createElement('button');
-                d.className = 'box';
-                d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { 
-                        fb.innerText = "Excellent ! Dit beheers je perfect voor het examen. 🌟 +15 pts"; 
-                        fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
-                        setTimeout(load, 1500);
-                    } else { 
-                        fb.innerText = "Attention ! ❌ Kijk dit onderdeel nog eens na in je cursus of op Polpo."; 
-                        fb.style.color = "#ef4444"; 
-                    }
-                };
-                document.getElementById('choices').appendChild(d);
+            document.getElementById('target').innerText = cur.nl;
+            
+            let choicesContainer = document.getElementById('choices');
+            choicesContainer.innerHTML = "";
+            
+            let allChoices = [cur.fr, ...cur.f].sort(() => Math.random() - 0.5);
+            
+            allChoices.forEach(choice => {
+                let btn = document.createElement('div');
+                btn.className = "box";
+                btn.innerText = choice;
+                btn.onclick = () => check(choice);
+                choicesContainer.appendChild(btn);
             });
         }
-        load();
+
+        function check(c) {
+            let fb = document.getElementById('feedback');
+            if(c === cur.fr) { 
+                fb.innerText = "Très bien! 🌟 +10 pts"; 
+                fb.style.color = "#10b981"; 
+                localScore += 10;
+                document.getElementById('score').innerText = localScore;
+                
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+                setTimeout(loadQuestion, 2000);
+            } else {
+                fb.innerText = `Oeps! Het moest zijn: ${cur.fr} ❌`; 
+                fb.style.color = "#ef4444";
+                setTimeout(loadQuestion, 3000);
+            }
+        }
     </script>
-    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

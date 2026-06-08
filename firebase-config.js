@@ -26,7 +26,7 @@ let currentUser = null;
 window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error(err));
 window.logout = () => signOut(auth).catch(err => console.error(err));
 
-// GLOBALE FUNCTIE: Score opslaan en optellen in de Cloud
+// GLOBALE FUNCTIE: Score opslaan (en optellen OF aftrekken) in de Cloud
 window.saveScoreToCloud = async (points) => {
     if (!currentUser) return;
     
@@ -34,15 +34,16 @@ window.saveScoreToCloud = async (points) => {
     try {
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
-            // Als de gebruiker al bestaat, tel de punten op bij de totalScore
+            // Tel de punten op (of trek af als 'points' negatief is, bijv. -10)
             await updateDoc(userDocRef, {
                 totalScore: increment(points)
             });
         } else {
-            // Als het de eerste keer is, maak het document aan
+            // Als het de eerste keer is en de speler verliest punten, begin op 0. Anders met de verdiende punten.
+            const startingPoints = points < 0 ? 0 : points;
             await setDoc(userDocRef, {
                 name: currentUser.displayName || "Anonieme Passer",
-                totalScore: points
+                totalScore: startingPoints
             });
         }
     } catch (error) {
@@ -63,10 +64,9 @@ onAuthStateChanged(auth, (user) => {
         if(mainDashboard) mainDashboard.style.display = "block";
         if(userDisplay) userDisplay.innerText = `👋 ${user.displayName}`;
         
-        // Laad live het leaderboard (als het element aanwezig is op de pagina)
         const boardElem = document.getElementById("leaderboard-list");
         if (boardElem) {
-            const q = query(collection(db, "leaderboard"), orderBy("totalScore", "desc"), limit(10));
+            const q = query(collection(db, \"leaderboard\"), orderBy(\"totalScore\", \"desc\"), limit(10));
             onSnapshot(q, (snapshot) => {
                 boardElem.innerHTML = "";
                 let rank = 1;
@@ -80,7 +80,7 @@ onAuthStateChanged(auth, (user) => {
                     li.style.borderBottom = "1px solid #2a2a4a";
                     
                     li.innerHTML = `<span>#${rank} ${data.name}</span> <strong>${data.totalScore} pts</strong>`;
-                    if(rank === 1) li.style.color = "var(--neon-yellow)"; // Goud voor nummer 1!
+                    if(rank === 1) li.style.color = "var(--neon-yellow)";
                     boardElem.appendChild(li);
                     rank++;
                 });

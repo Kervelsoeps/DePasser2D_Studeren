@@ -1,50 +1,61 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8"><title>Nederlands</title>
+    <meta charset="UTF-8">
+    <title>Nederlands Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
         .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; margin-top: 10px; }
-        .box:hover { border-color: #3b82f6; }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.1rem; text-align: left; }
+        .box:hover { border-color: #3b82f6; background: #1c1c38; }
     </style>
 </head>
 <body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>Verbanden & Grammatica Puzzel 🇳🇱</h2>
-        <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0;"></p>
-        <div id="choices"></div>
+        <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0; color: #3b82f6;"></p>
+        <div class="grid" id="choices"></div>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
+
     <script>
         const data = [
             { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "Het voorbijrijdende verkeer"] },
-            { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan."] }
+            { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan.", "Trapt Jan de bal?"] },
+            { q: "Wat is het GEVOLG in: 'Er was een stroomstoring, waardoor de computers uitvielen.'", a: "De computers vielen uit", f: ["Er was een stroomstoring", "De lichten gingen aan"] }
         ];
-       d.onclick = () => {
-    let fb = document.getElementById('feedback');
-    if(c === cur.a) { 
-        fb.innerText = "Taalmeester! ✨ +10 pts"; 
-        fb.style.color = "#10b981"; 
-        
-        // PUNTEN DOORSTUREN NAAR LEADERBOARD
-        if(window.saveScoreToCloud) {
-            window.saveScoreToCloud(10);
-        }
-    }
-    else { 
-        fb.innerText = "Probeer opnieuw! ❌"; 
-        fb.style.color = "#ef4444"; 
-    }
-    setTimeout(load, 1500);
-};
+        let cur;
+
+        function load() {
+            document.getElementById('feedback').innerText = "";
+            document.getElementById('choices').innerHTML = "";
+            cur = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('target').innerText = cur.q;
+
+            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
+            options.forEach(c => {
+                let d = document.createElement('button');
+                d.className = 'box';
+                d.innerText = c;
+                d.onclick = () => {
+                    let fb = document.getElementById('feedback');
+                    if(c === cur.a) { 
+                        fb.innerText = "Taalmeester! ✨ +10 pts"; 
+                        fb.style.color = "#10b981"; 
+                        if(window.saveScoreToCloud) { window.saveScoreToCloud(10); }
+                        setTimeout(load, 1500);
+                    } else { 
+                        fb.innerText = "Probeer opnieuw! ❌ Dat was niet het goede antwoord."; 
+                        fb.style.color = "#ef4444"; 
+                    }
                 };
-                container.appendChild(d);
+                document.getElementById('choices').appendChild(d);
             });
         }
         load();
     </script>
+    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>
-<script type="module" src="firebase-config.js"></script>

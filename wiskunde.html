@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8"><title>Wiskunde Game</title>
+    <style>
+        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+        .arcade { background: #141423; border: 3px solid #f59e0b; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
+        input { background: #111122; border: 2px solid #3b3b68; color: white; padding: 12px; font-size: 1.3rem; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .btn { background: #f59e0b; color: #000; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <div class="arcade" style="margin-top: 25px;">
+        <h2>Kluiskraker 🔐</h2>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0;"></p>
+        <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
+        <button class="btn" onclick="check()">Kraak de kluis</button>
+        <h3 id="feedback" style="margin-top: 20px;"></h3>
+    </div>
+    <script>
+        let wiskundeAns = 0;
+        function load() {
+            document.getElementById('feedback').innerText = ""; document.getElementById('ans').value = "";
+            let r = Math.floor(Math.random() * 3) + 2; let h = Math.floor(Math.random() * 4) + 5;
+            wiskundeAns = Math.round((3.14 * (r * r) * h) * 10) / 10;
+            document.getElementById('target').innerHTML = `Bereken het volume van een cilinder met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = 3.14 * r² * h)`;
+        }
+        function check() {
+            let val = parseFloat(document.getElementById('ans').value);
+            let fb = document.getElementById('feedback');
+            if(Math.abs(val - wiskundeAns) < 0.5) { fb.innerText = "🔓 GEKRAAKT!"; fb.style.color = "#10b981"; setTimeout(load, 2500); }
+            else { fb.innerText = "🚨 FOUTE CODE!"; fb.style.color = "#ef4444"; }
+        }
+        load();
+    </script>
+</body>
+</html>

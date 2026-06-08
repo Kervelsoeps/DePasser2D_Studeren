@@ -1,68 +1,70 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Engels Game - Volledige Examenstof</title>
+    <meta charset="UTF-8"><title>Engels Game</title>
     <style>
-        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #ef4444; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
-        .box:hover { border-color: #ef4444; background: #1c1c38; }
-        .badge { background: #ef4444; color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
+        body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; background-image: radial-gradient(#1e1b4b, #0a0a12); }
+        .arcade { background: #141423; border: 3px solid #ef4444; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+        .btn { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 10px; font-size: 1.1rem;}
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #9ca3af; text-decoration: none; }
     </style>
 </head>
-<body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
-    <div class="arcade" style="margin-top: 25px;">
-        <h2>Grammar & Functional Language Runner 🇬🇧</h2>
-        <p>Answer the question based on New Strike 2.2 (Units 3-7):</p>
-        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
-        <h1 id="target" style="font-size: 1.25rem; font-weight: bold; margin: 15px 0; color: #ef4444;"></h1>
-        <div class="grid" id="choices"></div>
+<body onload="load()">
+    <a href="index.html" class="back-btn">⬅ Terug naar Menu</a>
+    <div class="arcade">
+        <h2>Grammar Runner 🏃‍♂️</h2>
+        <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
+        <h3 id="quest" style="margin: 20px 0; font-size: 1.4rem;"></h3>
+        <button class="btn" onclick="answer('optA')" id="optA"></button>
+        <button class="btn" onclick="answer('optB')" id="optB"></button>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
 
+    <script type="module" src="firebase-config.js"></script>
     <script>
+        let idx = 0;
+        let localScore = 0;
         const data = [
-            { t: "Unit 3: Ordinal numbers", q: "How do you write the ordinal number for 22?", a: "twenty-second (22nd)", f: ["twenty-twoth (22th)", "twenty-secondth (22rd)"] },
-            { t: "Unit 3: Present Continuous", q: "Complete the personal arrangement: 'We _______ (have) a big birthday party tomorrow night.'", a: "are having", f: ["have", "will have"] },
-            { t: "Unit 3: Functional Language", q: "What is the correct way to write down the date '3 June'?", a: "June 3rd / 3 June", f: ["June 3th / 3th June", "June 3rd / 3rd June"] },
-            { t: "Unit 3: Informal call", q: "How do you answer the phone informally when a friend calls?", a: "Hi, this is Tom speaking. Is that you, Sam?", f: ["Good morning, company ABC, how can I help you?", "Who are you and why do you call?"] },
-            { t: "Unit 4/6: Giving directions", q: "How do you say: 'Rijd rechtdoor tot aan het rondpunt en neem de tweede afslag'?", a: "Go straight ahead until the roundabout and take the second exit.", f: ["Turn left at the traffic lights and go back.", "Walk past the crossroads and stop there."] },
-            { t: "Unit 5: Grammar / Present Tenses", q: "Choose the correct verb form for a permanent state: 'My uncle _______ (live) in London.'", a: "lives", f: ["is living", "live"] }
+            { q: "We ___ (have) a barbecue tomorrow night! (Arrangement)", a: "are having", b: "have", correct: "are having" },
+            { q: "Hoe schrijf je 3 juni correct?", a: "June 3rd", b: "June 3th", correct: "June 3rd" },
+            { q: "I ___ (meet) my friends at 8 PM.", a: "am meeting", b: "meet", correct: "am meeting" }
         ];
-        let cur;
 
         function load() {
+            if(idx >= data.length) { 
+                document.getElementById('quest').innerText = "🎮 Level Voltooid!"; 
+                document.getElementById('optA').style.display = "none";
+                document.getElementById('optB').style.display = "none";
+                return; 
+            }
+            document.getElementById('quest').innerText = data[idx].q;
+            document.getElementById('optA').innerText = data[idx].a;
+            document.getElementById('optB').innerText = data[idx].b;
             document.getElementById('feedback').innerText = "";
-            document.getElementById('choices').innerHTML = "";
-            cur = data[Math.floor(Math.random() * data.length)];
-            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
-            document.getElementById('target').innerText = cur.q;
-
-            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
-            options.forEach(c => {
-                let d = document.createElement('button');
-                d.className = 'box';
-                d.innerText = c;
-                d.onclick = () => {
-                    let fb = document.getElementById('feedback');
-                    if(c === cur.a) { 
-                        fb.innerText = "Awesome! +15 pts"; 
-                        fb.style.color = "#10b981"; 
-                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
-                        setTimeout(load, 1500);
-                    } else { 
-                        fb.innerText = "Wrong answer! Check your New Strike workbook or Quizlet."; 
-                        fb.style.color = "#ef4444"; 
-                    }
-                };
-                document.getElementById('choices').appendChild(d);
-            });
         }
-        load();
+
+        function answer(elementId) {
+            let choice = document.getElementById(elementId).innerText;
+            let fb = document.getElementById('feedback');
+            
+            if(choice === data[idx].correct) { 
+                fb.innerText = "Correct! ✨ +10 pts"; 
+                fb.style.color = "#10b981"; 
+                localScore += 10;
+                document.getElementById('score').innerText = localScore;
+                
+                if(window.saveScoreToCloud) {
+                    window.saveScoreToCloud(10);
+                }
+                idx++;
+                setTimeout(load, 2000);
+            } else {
+                fb.innerText = "Helaas, fout antwoord! ❌"; 
+                fb.style.color = "#ef4444";
+                idx++;
+                setTimeout(load, 2000);
+            }
+        }
     </script>
-    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>

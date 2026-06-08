@@ -1,52 +1,68 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8"><title>Wiskunde Game</title>
+    <meta charset="UTF-8">
+    <title>Wiskunde Game - Volledige Examenstof</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #f59e0b; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
-        input { background: #111122; border: 2px solid #3b3b68; color: white; padding: 12px; font-size: 1.3rem; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .btn { background: #f59e0b; color: #000; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
+        .arcade { background: #141423; border: 3px solid #f59e0b; border-radius: 20px; max-width: 750px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+        .box { background: #111122; border: 2px solid #2a2a4a; padding: 16px; border-radius: 14px; cursor: pointer; color: white; font-size: 1.05rem; text-align: left; }
+        .box:hover { border-color: #f59e0b; background: #1c1c38; }
+        .badge { background: #f59e0b; color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-left: 10px; }
     </style>
 </head>
 <body>
-    <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
+    <a href="index.html" style="color: #6b7280; text-decoration: none; font-weight: bold;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
-        <h2>Kluiskraker 🔐</h2>
-        <p id="target" style="font-size: 1.2rem; margin: 20px 0;"></p>
-        <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
-        <button class="btn" onclick="check()">Kraak de kluis</button>
+        <h2>Wiskunde Examen Kraken 📐</h2>
+        <p>Los de wiskundige opgave op (Modules 8, 13, 15 & 17):</p>
+        <h3 id="topic" style="color: #9ca3af; margin-top: 10px;"></h3>
+        <h1 id="target" style="font-size: 1.2rem; font-weight: bold; margin: 15px 0; color: #f59e0b;"></h1>
+        <div class="grid" id="choices"></div>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
+
     <script>
-        let wiskundeAns = 0;
+        const data = [
+            { t: "Mod 17: Volume van een cilinder", q: "Bereken het volume van een cilinder met straal r = 3 cm en hoogte h = 5 cm. (Formule: V = π * r² * h, gebruik π ≈ 3.14)", a: "141.3 cm³", f: ["47.1 cm³", "94.2 cm³"] },
+            { t: "Mod 13: Eerstegraadsvergelijkingen", q: "Los op naar x in de verzameling van de rationale getallen: 3x - 5 = 7", a: "x = 4", f: ["x = 2", "x = 6"] },
+            { t: "Mod 15: Omvormen van formules", q: "Vorm de formule voor de omtrek van een cirkel (O = 2 * π * r) om naar de straal r.", a: "r = O / (2 * π)", f: ["r = O - 2π", "r = 2 * π / O"] },
+            { t: "Mod 8: Verbanden", q: "Als 4 arbeiders er 6 uur over doen om een muur te bouwen, hoelang doen 8 arbeiders er dan over? (Omgekeerd evenredig verband)", a: "3 uur", f: ["12 uur", "4.5 uur"] },
+            { t: "Mod 17: Herleiden", q: "Zet om: 2.5 liter (L) is gelijk aan hoeveel cm³?", a: "2500 cm³", f: ["250 cm³", "25000 cm³"] },
+            { t: "Mod 13: Congruentiekenmerken", q: "Welk kenmerk toont aan dat twee driehoeken congruent zijn als ze twee gelijke zijden en een gelijke ingesloten hoek hebben?", a: "ZHZ (Zijde-Hoek-Zijde)", f: ["HHZ (Hoek-Hoek-Zijde)", "ZZZ (Zijde-Zijde-Zijde)"] }
+        ];
+        let cur;
+
         function load() {
-            document.getElementById('feedback').innerText = ""; document.getElementById('ans').value = "";
-            let r = Math.floor(Math.random() * 3) + 2; let h = Math.floor(Math.random() * 4) + 5;
-            wiskundeAns = Math.round((3.14 * (r * r) * h) * 10) / 10;
-            document.getElementById('target').innerHTML = `Bereken het volume van een cilinder met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = 3.14 * r² * h)`;
-        }
-        function check() {
-    let val = parseFloat(document.getElementById('ans').value);
-    let fb = document.getElementById('feedback');
-    if(Math.abs(val - wiskundeAns) < 0.5) { 
-        fb.innerText = "🔓 GEKRAAKT! +15 pts"; 
-        fb.style.color = "#10b981"; 
-        
-        // WISKUNDE IS MOEILIJKER, DUS GEEFT 15 PUNTEN!
-        if(window.saveScoreToCloud) {
-            window.saveScoreToCloud(15);
-        }
-        setTimeout(load, 2500); 
-    }
-    else { 
-        fb.innerText = "🚨 FOUTE CODE!"; 
-        fb.style.color = "#ef4444"; 
-    }
-}
+            document.getElementById('feedback').innerText = "";
+            document.getElementById('choices').innerHTML = "";
+            cur = data[Math.floor(Math.random() * data.length)];
+            document.getElementById('topic').innerHTML = `Onderdeel: <span class="badge">${cur.t}</span>`;
+            document.getElementById('target').innerText = cur.q;
+
+            let options = [cur.a, ...cur.f].sort(() => Math.random() - 0.5);
+            options.forEach(c => {
+                let d = document.createElement('button');
+                d.className = 'box';
+                d.innerText = c;
+                d.onclick = () => {
+                    let fb = document.getElementById('feedback');
+                    if(c === cur.a) { 
+                        fb.innerText = "🔓 Opgelost! Uitstekend gerekend. +15 pts"; 
+                        fb.style.color = "#10b981"; 
+                        if(window.saveScoreToCloud) { window.saveScoreToCloud(15); }
+                        setTimeout(load, 1500);
+                    } else { 
+                        fb.innerText = "Fout! ❌ Controleer je berekening of bekijk de studiewijzer op Polpo."; 
+                        fb.style.color = "#ef4444"; 
+                    }
+                };
+                document.getElementById('choices').appendChild(d);
+            });
         }
         load();
     </script>
+    <script type="module" src="firebase-config.js"></script>
 </body>
 </html>
-<script type="module" src="firebase-config.js"></script>

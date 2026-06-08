@@ -171,20 +171,24 @@
             document.getElementById('target').innerText = cur.b;
         }
 
-        function check(choice) {
-            let fb = document.getElementById('feedback');
-            if (choice === cur.d) {
-                score += 10;
-                document.getElementById('score').innerText = score;
-                fb.innerText = "Historisch correct! 👑 +10 punten";
-                fb.style.color = "var(--neon-green)";
-            } else {
-                fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌`;
-                fb.style.color = "var(--neon-red)";
-            }
-            // Laad na 1.8 seconden de volgende historische bron
-            setTimeout(loadQuestion, 1800);
+ function check(choice) {
+    let fb = document.getElementById('feedback');
+    if (choice === cur.d) {
+        score += 10;
+        document.getElementById('score').innerText = score;
+        fb.innerText = "Historisch correct! 👑 +10 punten";
+        fb.style.color = "var(--neon-green)";
+
+        // STUUR PUNTEN DIRECT DOOR NAAR HET KLASSENBOARD!
+        if(window.saveScoreToCloud) {
+            window.saveScoreToCloud(10);
         }
+    } else {
+        fb.innerText = `Oeps! Dat hoort bij ${cur.d}. ❌`;
+        fb.style.color = "var(--neon-red)";
+    }
+    setTimeout(loadQuestion, 1800);
+}
 
         // Start het spel zodra de pagina laadt
         loadQuestion();

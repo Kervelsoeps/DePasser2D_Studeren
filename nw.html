@@ -48,6 +48,9 @@
         }
 
         function check(choice) {
+            const boxes = document.querySelectorAll('.box');
+            boxes.forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.5'; });
+
             let fb = document.getElementById('feedback');
             if (choice === cur.a) {
                 localScore += 10;

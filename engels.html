@@ -7,71 +7,100 @@
         .arcade { background: #141423; border: 3px solid #ef4444; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
         .btn { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 10px; font-size: 1.1rem;}
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .menu-btn { background: #1a1a3a; border: 2px solid #ef4444; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .menu-btn:hover { background: #ef4444; color: black; font-weight: bold; }
         .back-btn { display: inline-block; margin-bottom: 20px; color: #9ca3af; text-decoration: none; }
     </style>
 </head>
-<body onload="load()">
+<body>
     <a href="index.html" class="back-btn">⬅ Terug naar Menu</a>
     <div class="arcade">
-        <h2>Grammar Runner 🏃‍♂️</h2>
+        <h2>Grammar Runner 🇬🇧</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <h3 id="quest" style="margin: 20px 0; font-size: 1.4rem;"></h3>
-        <button class="btn" onclick="answer('optA')" id="optA"></button>
-        <button class="btn" onclick="answer('optB')" id="optB"></button>
-        <h3 id="feedback" style="margin-top: 20px;"></h3>
+        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
+
+        <div id="module-selection">
+            <h3>Kies een Unit om te oefenen:</h3>
+            <button class="menu-btn" onclick="startQuiz('unit4')">🍳 Unit 4: Breakfast Time (Much/Many & Food)</button>
+            <button class="menu-btn" onclick="startQuiz('unit7')">🦸‍♂️ Unit 7: Amazing People (Past Simple)</button>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <h3 id="quest" style="margin: 20px 0; font-size: 1.4rem;"></h3>
+            <button class="btn" onclick="answer('optA')" id="optA"></button>
+            <button class="btn" onclick="answer('optB')" id="optB"></button>
+            <h3 id="feedback" style="margin-top: 20px;"></h3>
+        </div>
     </div>
 
     <script type="module" src="firebase-config.js"></script>
     <script>
+        let currentQuestions = [];
         let idx = 0;
         let localScore = 0;
-        const data = [
-            { q: "We ___ (have) a barbecue tomorrow night! (Arrangement)", a: "are having", b: "have", correct: "are having" },
-            { q: "Hoe schrijf je 3 juni correct?", a: "June 3rd", b: "June 3th", correct: "June 3rd" },
-            { q: "I ___ (meet) my friends at 8 PM.", a: "am meeting", b: "meet", correct: "am meeting" }
-        ];
 
-        function load() {
-            if(idx >= data.length) { 
-                document.getElementById('quest').innerText = "🎮 Level Voltooid!"; 
+        const dataset = {
+            unit4: [
+                { q: "How ___ milk do you want in your coffee?", a: "much", b: "many", correct: "much" },
+                { q: "There aren't ___ apples left in the basket.", a: "many", b: "much", correct: "many" },
+                { q: "We need ___ sugar for this cake recipe.", a: "a lot of", b: "many", correct: "a lot of" }
+            ],
+            unit7: [
+                { q: "Yesterday, I ___ (be) the victim of bullying, but now I feel strong.", a: "was", b: "were", correct: "was" },
+                { q: "We ___ (meet) our amazing friends at the school gate last night.", a: "met", b: "meet", correct: "met" },
+                { q: "They ___ (share) a very beautiful private anecdote.", a: "shared", b: "sharent", correct: "shared" }
+            ]
+        };
+
+        function startQuiz(unit) {
+            currentQuestions = dataset[unit];
+            idx = 0;
+            document.getElementById('module-selection').style.display = "none";
+            document.getElementById('game-screen').style.display = "block";
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if(idx >= currentQuestions.length) { 
+                document.getElementById('quest').innerText = "🎮 Unit Voltooid!"; 
                 document.getElementById('optA').style.display = "none";
                 document.getElementById('optB').style.display = "none";
+                document.getElementById('feedback').innerText = "Goed gewerkt! Je keert zo terug...";
+                setTimeout(() => { window.location.reload(); }, 3000);
                 return; 
             }
-            document.getElementById('quest').innerText = data[idx].q;
-            document.getElementById('optA').innerText = data[idx].a;
-            document.getElementById('optB').innerText = data[idx].b;
+            document.getElementById('quest').innerText = currentQuestions[idx].q;
+            document.getElementById('optA').innerText = currentQuestions[idx].a;
+            document.getElementById('optB').innerText = currentQuestions[idx].b;
             
-            // Deactiveer blokkade
             document.getElementById('optA').disabled = false;
             document.getElementById('optB').disabled = false;
             document.getElementById('feedback').innerText = "";
         }
 
         function answer(elementId) {
-            // Blokkeer direct beide knoppen
             document.getElementById('optA').disabled = true;
             document.getElementById('optB').disabled = true;
 
             let choice = document.getElementById(elementId).innerText;
             let fb = document.getElementById('feedback');
             
-            if(choice === data[idx].correct) { 
+            if(choice === currentQuestions[idx].correct) { 
                 fb.innerText = "Correct! ✨ +10 pts"; 
                 fb.style.color = "#10b981"; 
                 localScore += 10;
                 document.getElementById('score').innerText = localScore;
                 if(window.saveScoreToCloud) window.saveScoreToCloud(10);
                 idx++;
-                setTimeout(load, 2000);
+                setTimeout(loadQuestion, 2000);
             } else {
-                fb.innerText = "Helaas, fout antwoord! ❌ -10 pts"; 
+                fb.innerText = `Helaas, fout! Het juiste antwoord was: ${currentQuestions[idx].correct} ❌ -10 pts`; 
                 fb.style.color = "#ef4444";
                 localScore = Math.max(0, localScore - 10);
                 document.getElementById('score').innerText = localScore;
                 if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
                 idx++;
-                setTimeout(load, 2000);
+                setTimeout(loadQuestion, 2500);
             }
         }
     </script>

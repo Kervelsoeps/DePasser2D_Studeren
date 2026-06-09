@@ -5,21 +5,31 @@
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
         .arcade { background: #141423; border: 3px solid #10b981; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+        .menu-btn { background: #1a1a3a; border: 2px solid #10b981; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; }
+        .menu-btn:hover { background: #10b981; color: black; font-weight: bold; }
         .btn { background: #111122; color: white; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; width: 40%; font-size: 1rem; }
-        .btn:hover { border-color: #10b981; }
     </style>
 </head>
-<body onload="load()">
+<body>
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>The 3 P's Sorter 🌱</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <p id="scenario" style="font-size: 1.2rem; margin: 25px 0; font-weight: bold;"></p>
-        <button class="btn-choice btn" onclick="check('People')">👥 People</button>
-        <button class="btn-choice btn" onclick="check('Planet')">🌍 Planet</button>
-        <button class="btn-choice btn" onclick="check('Prosperity')">💰 Prosperity</button>
-        <button class="btn-choice btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
-        <h3 id="feedback" style="margin-top: 20px;"></h3>
+        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
+
+        <div id="module-selection">
+            <h3>Kies een Module:</h3>
+            <button class="menu-btn" onclick="startQuiz('duurzaam')">🌍 Duurzaamheid & De 3 P's</button>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <p id="scenario" style="font-size: 1.2rem; margin: 25px 0; font-weight: bold;"></p>
+            <button class="btn-choice btn" onclick="check('People')">👥 People</button>
+            <button class="btn-choice btn" onclick="check('Planet')">🌍 Planet</button>
+            <button class="btn-choice btn" onclick="check('Prosperity')">💰 Prosperity</button>
+            <button class="btn-choice btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
+            <h3 id="feedback" style="margin-top: 20px;"></h3>
+        </div>
     </div>
 
     <script type="module" src="firebase-config.js"></script>
@@ -31,6 +41,12 @@
         ];
         let cur;
         let localScore = 0;
+
+        function startQuiz() {
+            document.getElementById('module-selection').style.display = "none";
+            document.getElementById('game-screen').style.display = "block";
+            load();
+        }
 
         function load() { 
             document.getElementById('feedback').innerText = ""; 
@@ -47,7 +63,7 @@
 
             let fb = document.getElementById('feedback');
             if(choice === cur.c) { 
-                fb.innerText = "Juist gecategoriseerd! 🌍 +10 pts"; 
+                fb.innerText = "Juist! +10 pts"; 
                 fb.style.color = "#10b981"; 
                 localScore += 10;
                 document.getElementById('score').innerText = localScore;

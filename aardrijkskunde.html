@@ -15,10 +15,10 @@
         <h2>The 3 P's Sorter 🌱</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
         <p id="scenario" style="font-size: 1.2rem; margin: 25px 0; font-weight: bold;"></p>
-        <button class="btn" onclick="check('People')">👥 People</button>
-        <button class="btn" onclick="check('Planet')">🌍 Planet</button>
-        <button class="btn" onclick="check('Prosperity')">💰 Prosperity</button>
-        <button class="btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
+        <button class="btn-choice btn" onclick="check('People')">👥 People</button>
+        <button class="btn-choice btn" onclick="check('Planet')">🌍 Planet</button>
+        <button class="btn-choice btn" onclick="check('Prosperity')">💰 Prosperity</button>
+        <button class="btn-choice btn" onclick="check('Niet')">🛑 Niet Duurzaam</button>
         <h3 id="feedback" style="margin-top: 20px;"></h3>
     </div>
 
@@ -34,11 +34,17 @@
 
         function load() { 
             document.getElementById('feedback').innerText = ""; 
+            const btns = document.querySelectorAll('.btn-choice');
+            btns.forEach(b => { b.style.pointerEvents = 'auto'; b.style.opacity = '1'; });
+            
             cur = data[Math.floor(Math.random() * data.length)]; 
             document.getElementById('scenario').innerText = cur.t; 
         }
 
         function check(choice) {
+            const btns = document.querySelectorAll('.btn-choice');
+            btns.forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.5'; });
+
             let fb = document.getElementById('feedback');
             if(choice === cur.c) { 
                 fb.innerText = "Juist gecategoriseerd! 🌍 +10 pts"; 

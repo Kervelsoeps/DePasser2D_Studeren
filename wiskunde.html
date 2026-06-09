@@ -5,20 +5,31 @@
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
         .arcade { background: #141423; border: 3px solid #f59e0b; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
+        .menu-btn { background: #1a1a3a; border: 2px solid #f59e0b; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; }
+        .menu-btn:hover { background: #f59e0b; color: black; font-weight: bold; }
         input { background: #111122; border: 2px solid #3b3b68; color: white; padding: 12px; font-size: 1.3rem; border-radius: 10px; text-align: center; margin-bottom: 15px; }
         .btn { background: #f59e0b; color: #000; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
-<body onload="load()">
+<body>
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>Kluiskraker 🔐</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <p id="target" style="font-size: 1.2rem; margin: 20px 0;"></p>
-        <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
-        <button class="btn" id="submit-btn" onclick="check()">Kraak de kluis</button>
-        <h3 id="feedback" style="margin-top: 20px;"></h3>
+        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
+
+        <div id="module-selection">
+            <h3>Kies je wiskundig doellichaam:</h3>
+            <button class="menu-btn" onclick="startQuiz('cilinder')">📐 Module: Volume Cilinder (3.14 * r² * h)</button>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <p id="target" style="font-size: 1.2rem; margin: 20px 0;"></p>
+            <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
+            <button class="btn" id="submit-btn" onclick="check()">Kraak de kluis</button>
+            <h3 id="feedback" style="margin-top: 20px;"></h3>
+        </div>
     </div>
     
     <script type="module" src="firebase-config.js"></script>
@@ -26,10 +37,16 @@
         let wiskundeAns = 0;
         let localScore = 0;
         
+        function startQuiz(type) {
+            document.getElementById('module-selection').style.display = "none";
+            document.getElementById('game-screen').style.display = "block";
+            load();
+        }
+
         function load() {
             document.getElementById('feedback').innerText = ""; 
             document.getElementById('ans').value = "";
-            document.getElementById('submit-btn').disabled = false; // Activeer knop opnieuw
+            document.getElementById('submit-btn').disabled = false;
             
             let r = Math.floor(Math.random() * 3) + 2; 
             let h = Math.floor(Math.random() * 4) + 5;
@@ -38,7 +55,7 @@
         }
         
         function check() {
-            document.getElementById('submit-btn').disabled = true; // Blokkeer direct dubbelklikken
+            document.getElementById('submit-btn').disabled = true;
 
             let val = parseFloat(document.getElementById('ans').value);
             let fb = document.getElementById('feedback');
@@ -47,18 +64,15 @@
                 fb.style.color = "#10b981"; 
                 localScore += 15;
                 document.getElementById('score').innerText = localScore;
-                
                 if(window.saveScoreToCloud) window.saveScoreToCloud(15);
                 setTimeout(load, 2000);
             } else {
-                fb.innerText = `Fout! Het juiste antwoord was ${wiskundeAns} cm³. ❌ -10 pts`;
+                fb.innerText = `Fout! Het was ${wiskundeAns} cm³. ❌ -10 pts`;
                 fb.style.color = "#ef4444";
-                
                 localScore = Math.max(0, localScore - 10);
                 document.getElementById('score').innerText = localScore;
-                
                 if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
-                setTimeout(load, 3000);
+                setTimeout(load, 2500);
             }
         }
     </script>

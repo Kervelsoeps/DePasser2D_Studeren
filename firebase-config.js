@@ -20,42 +20,38 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
-// Dit dwingt Google om telkens het account-keuzescherm te tonen
 provider.setCustomParameters({ prompt: 'select_account' });
 
 let currentUser = null;
 
-// GLOBALE FUNCTIES: Zorg dat HTML hierbij kan
-window.loginWithGoogle = async () => {
-    try {
-        await signInWithPopup(auth, provider);
-    } catch (err) {
-        console.error("Inlogfout:", err);
-        alert("Inloggen mislukt. Open je dit bestand via Live Server (http://...)?");
-    }
-};
-
+// Globale inlog- en uitlogfuncties
+window.loginWithGoogle = () => signInWithPopup(auth, provider).catch(err => console.error("Inlogfout:", err));
 window.logout = () => signOut(auth).catch(err => console.error(err));
 
+// Punten opslaan in de cloud (met bescherming tegen negatieve startscores)
 window.saveScoreToCloud = async (points) => {
     if (!currentUser) return;
+    
     const userDocRef = doc(db, "leaderboard", currentUser.uid);
     try {
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
-            await updateDoc(userDocRef, { totalScore: increment(points) });
+            await updateDoc(userDocRef, {
+                totalScore: increment(points)
+            });
         } else {
+            const startingPoints = points < 0 ? 0 : points;
             await setDoc(userDocRef, {
                 name: currentUser.displayName || "Anonieme Passer",
-                totalScore: points < 0 ? 0 : points
+                totalScore: startingPoints
             });
         }
     } catch (error) {
-        console.error("Fout bij opslaan score:", error);
+        console.error("Fout bij het updaten van de score:", error);
     }
 };
 
-// Luister naar in- en uitloggen
+// Monitor de status van de gebruiker & live leaderboard
 onAuthStateChanged(auth, (user) => {
     const loginScreen = document.getElementById("login-screen");
     const mainDashboard = document.getElementById("dashboard-content");
@@ -81,6 +77,8 @@ onAuthStateChanged(auth, (user) => {
                     li.style.display = "flex";
                     li.style.justifyContent = "space-between";
                     li.style.padding = "8px 0";
+                    li.style.borderBottom = "1px solid #2a2a4a";
+                    
                     li.innerHTML = `<span>#${rank} ${data.name}</span> <strong>${data.totalScore} pts</strong>`;
                     if(rank === 1) li.style.color = "var(--neon-yellow)";
                     boardElem.appendChild(li);

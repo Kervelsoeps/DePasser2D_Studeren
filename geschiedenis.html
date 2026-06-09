@@ -4,32 +4,22 @@
     <meta charset="UTF-8"><title>Geschiedenis Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #eab308; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
-        .menu-btn { background: #1a1a3a; border: 2px solid #eab308; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; }
-        .menu-btn:hover { background: #eab308; color: black; font-weight: bold; }
+        .arcade { background: #141423; border: 3px solid #eab308; border-radius: 20px; max-width: 650px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(234, 179, 8, 0.3); }
         .box { background: #111122; border: 2px solid #2a2a4a; padding: 15px; border-radius: 10px; cursor: pointer; margin: 10px; display: inline-block; width: 40%; color: white; font-weight: bold;}
+        .box:hover { border-color: #eab308; }
     </style>
 </head>
-<body>
+<body onload="loadQuestion()">
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>Maatschappelijk Domein Sorter 📜</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
-
-        <div id="module-selection">
-            <h3>Kies een Historisch Tijdvak:</h3>
-            <button class="menu-btn" onclick="startQuiz('romeinen')">🏛️ Thema: De Romeinse Samenleving</button>
-        </div>
-
-        <div id="game-screen" style="display: none;">
-            <p id="target" style="font-size: 1.2rem; margin: 20px 0; color: #eab308; font-weight: bold;"></p>
-            <div class="box btn-hist" onclick="check('Politiek')">👑 Politiek</div>
-            <div class="box btn-hist" onclick="check('Economisch')">🌾 Economisch</div>
-            <div class="box btn-hist" onclick="check('Sociaal')">👥 Sociaal</div>
-            <div class="box btn-hist" onclick="check('Cultureel')">🎨 Cultureel</div>
-            <h3 id="feedback" style="margin-top: 20px;"></h3>
-        </div>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0; color: #eab308; font-weight: bold; min-height: 60px;"></p>
+        <div class="box btn-hist" onclick="check('Politiek')">👑 Politiek</div>
+        <div class="box btn-hist" onclick="check('Economisch')">🌾 Economisch</div>
+        <div class="box btn-hist" onclick="check('Sociaal')">👥 Sociaal</div>
+        <div class="box btn-hist" onclick="check('Cultureel')">🎨 Cultureel</div>
+        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
     </div>
 
     <script type="module" src="firebase-config.js"></script>
@@ -38,21 +28,27 @@
             { b: "Een oude Romeinse munt (Denari) gebruikt om graan te kopen.", d: "Economisch" },
             { b: "Een wet uitgevaardigd door keizer Augustus.", d: "Politiek" },
             { b: "Een wandschildering van de Romeinse god Jupiter.", d: "Cultureel" },
-            { b: "Slaven die moeten zwoegen op de landerijen van een rijke Romein.", d: "Sociaal" }
+            { b: "Romeinse handelaren die amforen met olijfolie verkopen op het forum.", d: "Economisch" },
+            { b: "De verovering van Gallië door het machtige leger van Julius Caesar.", d: "Politiek" },
+            { b: "Slaven die moeten zwoegen op de landerijen van een rijke Romeinse grootgrondbezitter.", d: "Sociaal" },
+            { b: "Het ontstaan van de Latijnse taal en de taalgrens in België.", d: "Cultureel" },
+            { b: "De Romeinse Senaat die stemt over een nieuwe wet.", d: "Politiek" },
+            { b: "Patriciërs (rijke adel) die alle politieke macht opeisen ten koste van de gewone plebejers.", d: "Sociaal" },
+            { b: "Gladiatorenspelen die worden georganiseerd in het Colosseum ter entertainment.", d: "Cultureel" },
+            { b: "Het innen van belastingen (tribuut) in de veroverde Romeinse provincies.", d: "Economisch" },
+            { b: "De Pax Romana: een lange periode van rust en vrede afgedwongen door de keizer.", d: "Politiek" },
+            { b: "Een opstand van ontevreden slaven onder leiding van de gladiator Spartacus.", d: "Sociaal" },
+            { b: "De bouw van een reusachtig aquaduct om steden van vers water te voorzien.", d: "Cultureel" },
+            { b: "Handelsroutes over de Middellandse Zee voor transport van graan uit Egypte.", d: "Economisch" }
         ];
         let cur;
         let localScore = 0;
-
-        function startQuiz() {
-            document.getElementById('module-selection').style.display = "none";
-            document.getElementById('game-screen').style.display = "block";
-            loadQuestion();
-        }
 
         function loadQuestion() {
             document.getElementById('feedback').innerText = "";
             const boxes = document.querySelectorAll('.btn-hist');
             boxes.forEach(b => { b.style.pointerEvents = 'auto'; b.style.opacity = '1'; });
+            
             cur = data[Math.floor(Math.random() * data.length)];
             document.getElementById('target').innerText = cur.b;
         }
@@ -75,7 +71,7 @@
                 localScore = Math.max(0, localScore - 10);
                 document.getElementById('score').innerText = localScore;
                 if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
-                setTimeout(loadQuestion, 2500);
+                setTimeout(loadQuestion, 3000);
             }
         }
     </script>

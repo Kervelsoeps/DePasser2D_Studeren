@@ -5,31 +5,20 @@
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
         .arcade { background: #141423; border: 3px solid #f59e0b; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); }
-        .menu-btn { background: #1a1a3a; border: 2px solid #f59e0b; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; }
-        .menu-btn:hover { background: #f59e0b; color: black; font-weight: bold; }
         input { background: #111122; border: 2px solid #3b3b68; color: white; padding: 12px; font-size: 1.3rem; border-radius: 10px; text-align: center; margin-bottom: 15px; }
         .btn { background: #f59e0b; color: #000; font-weight: bold; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
-<body>
+<body onload="load()">
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>Kluiskraker 🔐</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
-
-        <div id="module-selection">
-            <h3>Kies je wiskundig doellichaam:</h3>
-            <button class="menu-btn" onclick="startQuiz('cilinder')">📐 Module: Volume Cilinder (3.14 * r² * h)</button>
-        </div>
-
-        <div id="game-screen" style="display: none;">
-            <p id="target" style="font-size: 1.2rem; margin: 20px 0;"></p>
-            <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
-            <button class="btn" id="submit-btn" onclick="check()">Kraak de kluis</button>
-            <h3 id="feedback" style="margin-top: 20px;"></h3>
-        </div>
+        <p id="target" style="font-size: 1.2rem; margin: 20px 0; min-height: 70px;"></p>
+        <input type="number" id="ans" step="0.1" placeholder="Volume..."><br>
+        <button class="btn" id="submit-btn" onclick="check()">Kraak de kluis</button>
+        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
     </div>
     
     <script type="module" src="firebase-config.js"></script>
@@ -37,21 +26,35 @@
         let wiskundeAns = 0;
         let localScore = 0;
         
-        function startQuiz(type) {
-            document.getElementById('module-selection').style.display = "none";
-            document.getElementById('game-screen').style.display = "block";
-            load();
-        }
-
         function load() {
             document.getElementById('feedback').innerText = ""; 
             document.getElementById('ans').value = "";
             document.getElementById('submit-btn').disabled = false;
             
-            let r = Math.floor(Math.random() * 3) + 2; 
-            let h = Math.floor(Math.random() * 4) + 5;
-            wiskundeAns = Math.round((3.14 * (r * r) * h) * 10) / 10;
-            document.getElementById('target').innerHTML = `Bereken het volume van een cilinder met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = 3.14 * r² * h)`;
+            let types = ['cilinder', 'balk', 'kubus', 'kegel'];
+            let choice = types[Math.floor(Math.random() * types.length)];
+            
+            if (choice === 'cilinder') {
+                let r = Math.floor(Math.random() * 5) + 2;
+                let h = Math.floor(Math.random() * 6) + 5;
+                wiskundeAns = Math.round((3.14 * (r * r) * h) * 10) / 10;
+                document.getElementById('target').innerHTML = `Bereken het volume van een <b>cilinder</b> met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = 3.14 * r² * h)`;
+            } else if (choice === 'balk') {
+                let l = Math.floor(Math.random() * 6) + 3;
+                let b = Math.floor(Math.random() * 4) + 2;
+                let h = Math.floor(Math.random() * 5) + 4;
+                wiskundeAns = Math.round((l * b * h) * 10) / 10;
+                document.getElementById('target').innerHTML = `Bereken het volume van een <b>balk</b> met <br><b>lengte l = ${l} cm</b>, <b>breedte b = ${b} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = l * b * h)`;
+            } else if (choice === 'kubus') {
+                let z = Math.floor(Math.random() * 5) + 3;
+                wiskundeAns = Math.round((z * z * z) * 10) / 10;
+                document.getElementById('target').innerHTML = `Bereken het volume van een <b>kubus</b> met <br><b>zijde z = ${z} cm</b>.<br>(V = z³)`;
+            } else if (choice === 'kegel') {
+                let r = Math.floor(Math.random() * 4) + 3;
+                let h = Math.floor(Math.random() * 6) + 6;
+                wiskundeAns = Math.round(((3.14 * (r * r) * h) / 3) * 10) / 10;
+                document.getElementById('target').innerHTML = `Bereken het volume van een <b>kegel</b> met <br><b>straal r = ${r} cm</b> en <b>hoogte h = ${h} cm</b>.<br>(V = (3.14 * r² * h) / 3)`;
+            }
         }
         
         function check() {
@@ -64,15 +67,18 @@
                 fb.style.color = "#10b981"; 
                 localScore += 15;
                 document.getElementById('score').innerText = localScore;
+                
                 if(window.saveScoreToCloud) window.saveScoreToCloud(15);
                 setTimeout(load, 2000);
             } else {
-                fb.innerText = `Fout! Het was ${wiskundeAns} cm³. ❌ -10 pts`;
+                fb.innerText = `Fout! Het antwoord was ${wiskundeAns}. ❌ -10 pts`;
                 fb.style.color = "#ef4444";
+                
                 localScore = Math.max(0, localScore - 10);
                 document.getElementById('score').innerText = localScore;
+                
                 if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
-                setTimeout(load, 2500);
+                setTimeout(load, 3000);
             }
         }
     </script>

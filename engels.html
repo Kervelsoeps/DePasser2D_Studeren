@@ -6,6 +6,7 @@
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; background-image: radial-gradient(#1e1b4b, #0a0a12); }
         .arcade { background: #141423; border: 3px solid #ef4444; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
         .btn { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; cursor: pointer; margin: 10px; font-size: 1.1rem;}
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .back-btn { display: inline-block; margin-bottom: 20px; color: #9ca3af; text-decoration: none; }
     </style>
 </head>
@@ -40,10 +41,18 @@
             document.getElementById('quest').innerText = data[idx].q;
             document.getElementById('optA').innerText = data[idx].a;
             document.getElementById('optB').innerText = data[idx].b;
+            
+            // Deactiveer blokkade
+            document.getElementById('optA').disabled = false;
+            document.getElementById('optB').disabled = false;
             document.getElementById('feedback').innerText = "";
         }
 
         function answer(elementId) {
+            // Blokkeer direct beide knoppen
+            document.getElementById('optA').disabled = true;
+            document.getElementById('optB').disabled = true;
+
             let choice = document.getElementById(elementId).innerText;
             let fb = document.getElementById('feedback');
             

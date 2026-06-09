@@ -4,60 +4,45 @@
     <meta charset="UTF-8"><title>Nederlands Game</title>
     <style>
         body { background: #0a0a12; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 600px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
-        .menu-btn { background: #1a1a3a; border: 2px solid #3b82f6; color: white; padding: 15px; margin: 10px; border-radius: 10px; width: 80%; font-size: 1.2rem; cursor: pointer; }
-        .menu-btn:hover { background: #3b82f6; color: black; font-weight: bold; }
+        .arcade { background: #141423; border: 3px solid #3b82f6; border-radius: 20px; max-width: 650px; margin: 0 auto; padding: 30px; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
         .box { background: #111122; border: 2px solid #2a2a4a; padding: 20px; border-radius: 14px; cursor: pointer; margin-top: 10px; color: white;}
         .box:hover { border-color: #3b82f6; }
     </style>
 </head>
-<body>
+<body onload="loadQuestion()">
     <a href="index.html" style="color: #6b7280; text-decoration: none;">⬅ Dashboard</a>
     <div class="arcade" style="margin-top: 25px;">
         <h2>Verbanden & Grammatica Puzzel 🇳🇱</h2>
         <p style="color: #6b7280;">Lokale Score: <span id="score">0</span> pts</p>
-        <hr style="border: 1px solid #2a2a4a; margin: 15px 0;">
-
-        <div id="module-selection">
-            <h3>Kies een hoofdstuk uit Campus 2:</h3>
-            <button class="menu-btn" onclick="startQuiz('mod21')">🌳 Module 21: Oorzaak en Gevolg</button>
-            <button class="menu-btn" onclick="startQuiz('mod22')">🎯 Module 22: Actieve en Passieve zinnen</button>
-        </div>
-
-        <div id="game-screen" style="display: none;">
-            <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0;"></p>
-            <div id="choices"></div>
-            <h3 id="feedback" style="margin-top: 20px;"></h3>
-        </div>
+        <p id="target" style="font-size: 1.3rem; font-weight: bold; margin: 20px 0; min-height: 50px;"></p>
+        <div id="choices"></div>
+        <h3 id="feedback" style="margin-top: 20px; min-height: 30px;"></h3>
     </div>
 
     <script type="module" src="firebase-config.js"></script>
     <script>
-        let currentQuestions = [];
-        let cur = {};
+        const data = [
+            { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "Het voorbijrijdende verkeer"] },
+            { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan."] },
+            { q: "Wat is het GEVOLG in: 'De trein had vertraging omdat de bliksem insloeg.'", a: "De trein had vertraging", f: ["De bliksem sloeg in", "Het spoor was kapot"] },
+            { q: "Zet om naar PASSIEF: 'De kok bereidt een heerlijke maaltijd.'", a: "Een heerlijke maaltijd wordt door de kok bereid.", f: ["De kok wordt door een maaltijd bereid."] },
+            { q: "Wat is de juiste spelling met een trema?", a: "ruïne", f: ["ruine", "ruï-ne"] },
+            { q: "Welk woord heeft een correct koppelteken?", a: "gala-uniform", f: ["galauniform", "gala_uniform"] },
+            { q: "Wat is de juiste spelling?", a: "koffie-apparaat", f: ["koffieapparaat", "koffie apparaat"] },
+            { q: "Wat is de juiste spelling met een trema?", a: "kopiëren", f: ["kopieren", "kopiëeren"] },
+            { q: "Zet om naar ACTIEF: 'De auto wordt door papa gewassen.'", a: "Papa wast de auto.", f: ["De auto wast papa."] },
+            { q: "Wat is een hoofdpersonage in een verhaal?", a: "De belangrijkste figuur rond wie het verhaal draait.", f: ["De helper of tegenstander die minder voorkomt."] },
+            { q: "Wat is een nevenpersonage?", a: "Vaak de helper of tegenstander van de hoofdpersoon.", f: ["De schrijver van het boek zelf."] },
+            { q: "Wat betekent een chronologische verhaallijn?", a: "Gebeurtenissen verteld in de volgorde waarin ze gebeuren.", f: ["Het verhaal begint met het einde en flitst terug."] },
+            { q: "Wat is het GEVOLG in: 'Omdat Lars niet studeerde, haalde hij een onvoldoende.'", a: "Lars haalde een onvoldoende", f: ["Lars studeerde niet", "Lars was moe"] },
+            { q: "Zet om naar PASSIEF: 'De politie arresteert de dief.'", a: "De dief wordt door de politie gearresteerd.", f: ["De politie wordt door de dief gearresteerd."] }
+        ];
+        let cur;
         let localScore = 0;
-
-        const dataset = {
-            mod21: [
-                { q: "Wat is de OORZAAK in: 'Doordat het hard regende, werd de straat kletsnat.'", a: "Het harde regenen", f: ["De natte straat", "De bliksem"] },
-                { q: "Wat is het GEVOLG in: 'De trein had vertraging, waardoor Tuur te laat op school kwam.'", a: "Tuur kwam te laat op school", f: ["De trein had vertraging", "De wekker ging niet"] }
-            ],
-            mod22: [
-                { q: "Zet om naar ACTIEF: 'De bal wordt door Jan getrapt.'", a: "Jan trapt de bal.", f: ["De bal trapt Jan.", "Gepasseerd door Jan."] },
-                { q: "Is dit Actief of Passief: 'De leraar verbetert de toetsen.'", a: "Actief", f: ["Passief"] }
-            ]
-        };
-
-        function startQuiz(mod) {
-            currentQuestions = dataset[mod];
-            document.getElementById('module-selection').style.display = "none";
-            document.getElementById('game-screen').style.display = "block";
-            loadQuestion();
-        }
 
         function loadQuestion() {
             document.getElementById('feedback').innerText = "";
-            cur = currentQuestions[Math.floor(Math.random() * currentQuestions.length)];
+            cur = data[Math.floor(Math.random() * data.length)];
             document.getElementById('target').innerText = cur.q;
             
             let choicesContainer = document.getElementById('choices');
@@ -86,12 +71,12 @@
                 if(window.saveScoreToCloud) window.saveScoreToCloud(10);
                 setTimeout(loadQuestion, 2000);
             } else {
-                fb.innerText = "Fout! Denk goed na over de zinsbouw. ❌ -10 pts"; 
+                fb.innerText = "Oeps! Dat klopt niet. ❌ -10 pts"; 
                 fb.style.color = "#ef4444";
                 localScore = Math.max(0, localScore - 10);
                 document.getElementById('score').innerText = localScore;
                 if(window.saveScoreToCloud) window.saveScoreToCloud(-10);
-                setTimeout(loadQuestion, 2500);
+                setTimeout(loadQuestion, 2000);
             }
         }
     </script>
